@@ -107,7 +107,9 @@ class SampahController extends Controller
         foreach ($data as $d) {
             $d->harga_pengepul_rp = 'Rp ' . number_format($d->harga_pengepul, 0, ',', '.');
             $d->harga_ditabung_rp = 'Rp ' . number_format($d->harga_ditabung ?? 0, 0, ',', '.');
-            $d->foto_url = asset($d->foto);
+
+            // Bangun URL HTTPS dari APP_URL + path
+            $d->foto_url = config('app.url') . '/uploads/sampah/' . basename($d->foto);
         }
 
         return response()->json([
@@ -116,4 +118,5 @@ class SampahController extends Controller
             'data' => $data
         ]);
     }
+
 }
