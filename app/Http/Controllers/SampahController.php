@@ -108,7 +108,7 @@ class SampahController extends Controller
             $d->harga_pengepul_rp = 'Rp ' . number_format($d->harga_pengepul, 0, ',', '.');
             $d->harga_ditabung_rp = 'Rp ' . number_format($d->harga_ditabung ?? 0, 0, ',', '.');
 
-            $d->foto_url = asset('uploads/sampah/' . basename($d->foto));
+            $d->foto_url = url('uploads/sampah/' . basename($d->foto));
         }
 
         return response()->json([
