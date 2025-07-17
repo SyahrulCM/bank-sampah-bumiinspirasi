@@ -97,4 +97,23 @@ class SampahController extends Controller
 
         return redirect('/sampah')->with('sukses', 'Data berhasil dihapus.');
     }
+
+    //==================================================================================================================================================
+
+    public function apiSampah()
+    {
+        $data = Sampah::all();
+
+        foreach ($data as $d) {
+            $d->harga_pengepul_rp = 'Rp ' . number_format($d->harga_pengepul, 0, ',', '.');
+            $d->harga_ditabung_rp = 'Rp ' . number_format($d->harga_ditabung ?? 0, 0, ',', '.');
+            $d->foto_url = asset($d->foto);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data sampah berhasil diambil',
+            'data' => $data
+        ]);
+    }
 }
