@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Registrasi;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class RegistrasiController extends Controller
 {
@@ -23,13 +24,23 @@ class RegistrasiController extends Controller
     // Fungsi input registrasi manual
     public function inputRegistrasi(Request $request)
     {
-        $data = $request->only([
-            'nama_lengkap', 'usia', 'jenis_kelamin', 'alamat', 'nomer_telepon', 'email',
-            'pekerjaan', 'nama_rekening', 'nomor_rekening', 'transportasi',
-            'mengetahui', 'alasan', 'tanggal'
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'nomer_telepon' => 'required|string|max:20',
+            'nomer_induk_nasabah' => 'required|string|max:50|unique:registrasis',
+            'password' => 'required|string|min:6',
+            'tanggal' => 'required|date',
         ]);
 
-        Registrasi::create($data);
+        Registrasi::create([
+            'nama_lengkap' => $request->nama_lengkap,
+            'alamat' => $request->alamat,
+            'nomer_telepon' => $request->nomer_telepon,
+            'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
+            'password' => bcrypt($request->password),
+            'tanggal' => $request->tanggal,
+        ]);
 
         return redirect()->back()->with('sukses', 'Data registrasi berhasil disimpan.');
     }
@@ -44,11 +55,29 @@ class RegistrasiController extends Controller
     // Fungsi update registrasi
     public function updateRegistrasi(Request $request, $id_registrasi)
     {
-        Registrasi::where('id_registrasi', $id_registrasi)->update($request->only([
-            'nama_lengkap', 'usia', 'jenis_kelamin', 'alamat', 'nomer_telepon', 'email',
-            'pekerjaan', 'nama_rekening', 'nomor_rekening', 'transportasi',
-            'mengetahui', 'alasan', 'tanggal'
-        ]));
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'nomer_telepon' => 'required|string|max:20',
+            'nomer_induk_nasabah' => 'required|string|max:50|unique:registrasis,nomer_induk_nasabah,' . $id_registrasi . ',id_registrasi',
+            'tanggal' => 'required|date',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $data = [
+            'nama_lengkap' => $request->nama_lengkap,
+            'alamat' => $request->alamat,
+            'nomer_telepon' => $request->nomer_telepon,
+            'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
+            'tanggal' => $request->tanggal,
+        ];
+
+        // Jika password diisi, update password-nya
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        Registrasi::where('id_registrasi', $id_registrasi)->update($data);
 
         return redirect()->route('registrasi.index')->with('sukses', 'Data berhasil diperbarui.');
     }
@@ -62,6 +91,7 @@ class RegistrasiController extends Controller
         return redirect('/registrasi')->with('sukses', 'Data berhasil dihapus.');
     }
 
+    // Fungsi import dari Excel
     public function importExcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -77,24 +107,19 @@ class RegistrasiController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $rows = $sheet->toArray(null, true, true, true);
 
-       
         foreach ($rows as $index => $row) {
-            if ($index == 1) continue;
+            if ($index == 1) continue; // skip header
+
+            // Pastikan password terisi, kalau tidak, default password = "123456"
+            $password = !empty($row['E']) ? $row['E'] : '123456';
 
             Registrasi::create([
-                'nama_lengkap'     => $row['A'] ?? '',
-                'usia'             => $row['B'] ?? '',
-                'jenis_kelamin'    => $row['C'] ?? '',
-                'alamat'           => $row['D'] ?? '',
-                'nomer_telepon'    => $row['E'] ?? '',
-                'email'            => $row['F'] ?? '',
-                'pekerjaan'        => $row['G'] ?? '',
-                'nama_rekening'    => $row['H'] ?? '',
-                'nomor_rekening'   => $row['I'] ?? '',
-                'transportasi'     => $row['J'] ?? '',
-                'mengetahui'       => $row['K'] ?? '',
-                'alasan'           => $row['L'] ?? '',
-                'tanggal'          => $row['M'] ?? now(),
+                'nama_lengkap' => $row['A'] ?? '',
+                'alamat' => $row['B'] ?? '',
+                'nomer_telepon' => $row['C'] ?? '',
+                'nomer_induk_nasabah' => $row['D'] ?? '',
+                'password' => bcrypt($password),
+                'tanggal' => isset($row['F']) ? date('Y-m-d', strtotime($row['F'])) : now(),
             ]);
         }
 

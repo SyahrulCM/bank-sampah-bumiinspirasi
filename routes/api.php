@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SampahController;
+use App\Http\Controllers\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,14 @@ use App\Http\Controllers\SampahController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+use App\Http\Controllers\Api\AuthNasabahController;
+
+Route::post('/nasabah/login', [AuthNasabahController::class, 'login']);
+Route::post('/nasabah/register', [AuthNasabahController::class, 'register']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/nasabah/logout', [AuthNasabahController::class, 'logout']);
+    Route::get('/nasabah/profile', fn(Request $request) => $request->user());
 });
 
 Route::get('/sampah', [SampahController::class, 'apiSampah']);

@@ -14,17 +14,10 @@ return new class extends Migration
         Schema::create('registrasis', function (Blueprint $table) {
             $table->increments('id_registrasi');
             $table->string('nama_lengkap');
-            $table->integer('usia');
-            $table->enum('jenis_kelamin', ['Pria','Wanita']);
             $table->text('alamat');
             $table->string('nomer_telepon');
-            $table->string('email');
-            $table->text('pekerjaan');
-            $table->string('nama_rekening');
-            $table->string('nomor_rekening');
-            $table->enum('transportasi', ['Jalan','Motor','Mobil']);
-            $table->enum('mengetahui',['Keluarga','Tetangga','Website','Petugas BSBI','Tahu Sendiri','Rekanan Kegiatan','Lainnya']);
-            $table->text('alasan');
+            $table->string('nomer_induk_nasabah');
+            $table->string('password');
             $table->date('tanggal');
             $table->timestamps();
         });

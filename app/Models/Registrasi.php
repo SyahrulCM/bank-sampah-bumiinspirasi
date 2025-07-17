@@ -5,26 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Laravel\Sanctum\HasApiTokens;
+
 class Registrasi extends Model
 {
-    use HasFactory;
+    use HasApiTokens;
+
     protected $primaryKey = 'id_registrasi';
-    protected $table = 'registrasis';
+
     protected $fillable = [
-        'id_registrasi',
-        'nama_lengkap',
-        'usia',
-        'jenis_kelamin',
-        'alamat',
-        'nomer_telepon',
-        'email',
-        'pekerjaan',
-        'nama_rekening',
-        'nomor_rekening',
-        'transportasi',
-        'mengetahui',
-        'alasan',
-        'tanggal'
+        'nama_lengkap', 'alamat', 'nomer_telepon', 'nomer_induk_nasabah', 'password', 'tanggal'
     ];
 
+    protected $hidden = ['password'];
 }
