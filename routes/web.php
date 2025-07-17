@@ -60,7 +60,7 @@ Route::middleware(['cekLogin'])->group(function () {
 
     Route::get('/registrasi',[RegistrasiController::class,'registrasi']);
     Route::get('/registrasi', [RegistrasiController::class, 'getRegistrasi'])->name('registrasi.index');
-    Route::post('/registrasi/input', [RegistrasiController::class, 'inputRegistrasi']);
+    Route::post('/registrasi/input', [RegistrasiController::class, 'inputRegistrasi'])->name('registrasi.input');
     Route::get('/registrasi/edit/{id_registrasi}', [RegistrasiController::class, 'editRegistrasi'])->name('registrasi.edit');
     Route::post('/registrasi/update/{id_registrasi}', [RegistrasiController::class, 'updateRegistrasi'])->name('registrasi.update');
     Route::get('/registrasi/hapus/{id_registrasi}', [RegistrasiController::class, 'hapusRegistrasi'])->name('registrasi.hapus');
