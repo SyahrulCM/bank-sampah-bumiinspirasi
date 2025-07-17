@@ -32,6 +32,7 @@ class TransaksiController extends Controller
         try {
             $tanggal = $request->tanggal ?? date('Y-m-d');
 
+            // Cek apakah transaksi dengan nasabah dan tanggal yang sama sudah ada
             $transaksi = Transaksi::where('id_registrasi', $request->id_registrasi)
                                   ->where('tanggal', $tanggal)
                                   ->first();
@@ -44,23 +45,24 @@ class TransaksiController extends Controller
                 ]);
             }
 
-            $totalSaldo = 0;
+            $totalSaldoBaru = 0;
             $beratSampah = $request->berat_sampah;
 
             foreach ($request->id_sampah as $index => $id_sampah) {
                 $beratBaru = (float) str_replace(',', '.', $beratSampah[$index]);
 
+                // Cari detail transaksi untuk sampah ini
                 $detail = DetailTransaksi::where('id_transaksi', $transaksi->id_transaksi)
                             ->where('id_sampah', $id_sampah)
                             ->first();
 
                 if ($detail) {
+                    // Jika sudah ada, update berat dan jumlah setoran
                     $detail->berat_sampah += $beratBaru;
-
                     $detail->jumlah_setoran += 1;
-
                     $detail->save();
                 } else {
+                    // Jika belum ada, buat data baru
                     DetailTransaksi::create([
                         'id_transaksi' => $transaksi->id_transaksi,
                         'id_sampah' => $id_sampah,
@@ -70,6 +72,7 @@ class TransaksiController extends Controller
                     ]);
                 }
 
+                // Update stok
                 $stok = Stok::where('id_sampah', $id_sampah)->first();
                 if ($stok) {
                     $stok->jumlah += $beratBaru;
@@ -82,6 +85,7 @@ class TransaksiController extends Controller
                     ]);
                 }
 
+                // Mutasi
                 $nasabah = Registrasi::find($request->id_registrasi);
                 Mutasi::create([
                     'tanggal' => $tanggal,
@@ -91,11 +95,13 @@ class TransaksiController extends Controller
                     'keterangan' => 'Setoran dari nasabah ' . ($nasabah ? $nasabah->nama_lengkap : '-'),
                 ]);
 
+                // Hitung saldo tambahan
                 $harga = Sampah::find($id_sampah)->harga_ditabung ?? 0;
-                $totalSaldo += $beratBaru * $harga;
+                $totalSaldoBaru += $beratBaru * $harga;
             }
 
-            $transaksi->saldo += $totalSaldo;
+            // Tambahkan ke saldo lama
+            $transaksi->saldo += $totalSaldoBaru;
             $transaksi->save();
 
             DB::commit();
@@ -195,8 +201,4 @@ class TransaksiController extends Controller
 
         return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
-
-
-
-
 }
