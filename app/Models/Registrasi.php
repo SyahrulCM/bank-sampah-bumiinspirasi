@@ -16,6 +16,4 @@ class Registrasi extends Model
     protected $fillable = [
         'nama_lengkap', 'alamat', 'nomer_telepon', 'nomer_induk_nasabah', 'password', 'tanggal'
     ];
-
-    protected $hidden = ['password'];
 }
