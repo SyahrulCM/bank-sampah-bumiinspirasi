@@ -1,12 +1,24 @@
-@extends('layout.main')
+<style>
+  .dataTables_wrapper .dataTables_filter {
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>
 
+@extends('layout.main')
 @section('content')
 <div class="content-wrapper">
   <div class="content-header">
     <div class="container-fluid">
+      @if(session('sukses'))
+        <div class="alert alert-success alert-dismissible">
+          {{ session('sukses') }}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+      @endif
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Data Registrasi Nasabah</h1>
+          <h1 class="m-0">Registrasi Nasabah</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -21,70 +33,24 @@
   <section class="content">
     <div class="container-fluid">
 
-      {{-- Form Tambah Registrasi Manual --}}
       <div class="card">
-        <div class="card-header bg-primary text-white">
-          <h3 class="card-title">Form Registrasi Baru</h3>
+        <div class="card-header">
+          <h3 class="card-title">Data Registrasi Nasabah</h3>
         </div>
-        <form action="{{ route('registrasi.input') }}" method="POST">
-          @csrf
-          <div class="card-body row">
-            <div class="form-group col-md-4">
-              <label>Nama Lengkap</label>
-              <input type="text" name="nama_lengkap" class="form-control" required>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Alamat</label>
-              <input type="text" name="alamat" class="form-control" required>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Nomor Telepon</label>
-              <input type="text" name="nomer_telepon" class="form-control" required>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Nomor Induk Nasabah</label>
-              <input type="text" name="nomer_induk_nasabah" class="form-control" required>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Tanggal</label>
-              <input type="date" name="tanggal" class="form-control" required>
-            </div>
-            <div class="form-group col-md-4">
-              <label>Password (Opsional)</label>
-              <input type="password" name="password" class="form-control">
-            </div>
+        <div class="card-body">
+          {{-- Tombol Tambah (Modal) dan Import --}}
+          <div class="d-flex justify-content-between mb-3">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-registrasi">
+              Tambah
+            </button>
+            <form action="{{ route('registrasi.import') }}" method="POST" enctype="multipart/form-data" class="form-inline">
+              @csrf
+              <input type="file" name="file" class="form-control-file mr-2" accept=".xlsx,.xls" required>
+              <button type="submit" class="btn btn-primary">Import Excel</button>
+            </form>
           </div>
-          <div class="card-footer">
-            <button type="submit" class="btn btn-success">Simpan</button>
-          </div>
-        </form>
-      </div>
 
-      {{-- Form Import Excel --}}
-      <div class="card">
-        <div class="card-header bg-info text-white">
-          <h3 class="card-title">Import Data Registrasi dari Excel</h3>
-        </div>
-        <form action="{{ route('registrasi.import') }}" method="POST" enctype="multipart/form-data">
-          @csrf
-          <div class="card-body">
-            <div class="form-group">
-              <label>Pilih File Excel (.xlsx atau .xls)</label>
-              <input type="file" name="file" class="form-control-file" accept=".xlsx,.xls" required>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Import</button>
-          </div>
-        </form>
-      </div>
-
-      {{-- Tabel Data Registrasi --}}
-      <div class="card">
-        <div class="card-header bg-secondary text-white">
-          <h3 class="card-title">Daftar Registrasi</h3>
-        </div>
-        <div class="card-body table-responsive">
+          {{-- Tabel --}}
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -126,5 +92,52 @@
 
     </div>
   </section>
+</div>
+
+<!-- Modal Registrasi -->
+<div class="modal fade" id="modal-registrasi">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white">Form Registrasi Baru</h4>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ route('registrasi.input') }}" method="POST">
+        @csrf
+        <div class="modal-body row">
+          <div class="form-group col-md-6">
+            <label>Nama Lengkap</label>
+            <input type="text" name="nama_lengkap" class="form-control" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Alamat</label>
+            <input type="text" name="alamat" class="form-control" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>No. Telepon</label>
+            <input type="text" name="nomer_telepon" class="form-control" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>No. Induk Nasabah</label>
+            <input type="text" name="nomer_induk_nasabah" class="form-control" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Tanggal</label>
+            <input type="date" name="tanggal" class="form-control" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Password (Opsional)</label>
+            <input type="password" name="password" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+          <button type="submit" class="btn btn-success">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 @endsection
