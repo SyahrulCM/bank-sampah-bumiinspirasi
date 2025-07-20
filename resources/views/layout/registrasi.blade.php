@@ -33,23 +33,36 @@
   <section class="content">
     <div class="container-fluid">
 
+      {{-- Card Import Excel --}}
+      <div class="card mb-3">
+        <div class="card-header bg-info text-white">
+          <h3 class="card-title">Import Data Registrasi dari Excel</h3>
+        </div>
+        <form action="{{ route('registrasi.import') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="card-body row align-items-end">
+            <div class="form-group col-md-8 mb-0">
+              <label>Pilih File Excel (.xlsx atau .xls)</label>
+              <input type="file" name="file" class="form-control-file" accept=".xlsx,.xls" required>
+            </div>
+            <div class="form-group col-md-4 mb-0 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary mr-2"><i class="fas fa-file-import"></i> Import Excel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {{-- Card Data Registrasi --}}
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Data Registrasi Nasabah</h3>
         </div>
         <div class="card-body">
-          {{-- Tombol Tambah (Modal) dan Import --}}
           <div class="d-flex justify-content-between mb-3">
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-registrasi">
               Tambah
             </button>
-            <form action="{{ route('registrasi.import') }}" method="POST" enctype="multipart/form-data" class="form-inline">
-              @csrf
-              <input type="file" name="file" class="form-control-file mr-2" accept=".xlsx,.xls" required>
-              <button type="submit" class="btn btn-primary">Import Excel</button>
-            </form>
           </div>
-
           {{-- Tabel --}}
           <table id="example1" class="table table-bordered table-striped">
             <thead>
@@ -95,12 +108,12 @@
 </div>
 
 <!-- Modal Registrasi -->
-<div class="modal fade" id="modal-registrasi">
+<div class="modal fade" id="modal-lg">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
-        <h4 class="modal-title text-white">Form Registrasi Baru</h4>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+      <div class="modal-header">
+        <h4 class="modal-title">Form Registrasi Baru</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
