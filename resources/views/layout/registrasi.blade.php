@@ -59,7 +59,7 @@
         </div>
         <div class="card-body">
           <div class="d-flex justify-content-between mb-3">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-registrasi">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-lg">
               Tambah
             </button>
           </div>
