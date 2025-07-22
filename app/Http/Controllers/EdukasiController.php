@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Edukasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Edukasi;
+use Illuminate\Support\Facades\File;
 
 class EdukasiController extends Controller
 {
@@ -19,12 +19,16 @@ class EdukasiController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $fotoPath = null;
+
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('edukasi', 'public');
+            $foto = $request->file('foto');
+            $namaFoto = time() . '_' . $foto->getClientOriginalName();
+            $foto->move(public_path('uploads/edukasi'), $namaFoto);
+            $fotoPath = 'uploads/edukasi/' . $namaFoto;
         }
 
         Edukasi::create([
@@ -47,18 +51,22 @@ class EdukasiController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $edukasi = Edukasi::where('id_edukasi', $id)->firstOrFail();
 
+        // Update foto jika ada file baru
         if ($request->hasFile('foto')) {
-            if ($edukasi->foto && Storage::disk('public')->exists($edukasi->foto)) {
-                Storage::disk('public')->delete($edukasi->foto);
+            // Hapus file lama jika ada
+            if ($edukasi->foto && File::exists(public_path($edukasi->foto))) {
+                File::delete(public_path($edukasi->foto));
             }
 
-            $fotoPath = $request->file('foto')->store('edukasi', 'public');
-            $edukasi->foto = $fotoPath;
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/edukasi'), $filename);
+            $edukasi->foto = 'uploads/edukasi/' . $filename;
         }
 
         $edukasi->judul = $request->judul;
@@ -72,8 +80,9 @@ class EdukasiController extends Controller
     {
         $edukasi = Edukasi::where('id_edukasi', $id)->firstOrFail();
 
-        if ($edukasi->foto && Storage::disk('public')->exists($edukasi->foto)) {
-            Storage::disk('public')->delete($edukasi->foto);
+        // Hapus foto dari folder jika ada
+        if ($edukasi->foto && File::exists(public_path($edukasi->foto))) {
+            File::delete(public_path($edukasi->foto));
         }
 
         $edukasi->delete();

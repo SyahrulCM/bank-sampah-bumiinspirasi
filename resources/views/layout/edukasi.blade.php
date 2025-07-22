@@ -69,7 +69,7 @@
                       <td>{{ Str::limit(strip_tags($e->isi), 80) }}</td>
                       <td>
                         @if($e->foto)
-                          <img src="{{ asset('storage/' . $e->foto) }}" width="60" height="60" style="object-fit: cover;">
+                          <img src="{{ asset($e->foto) }}" width="60" height="60" style="object-fit: cover;">
                         @else
                           -
                         @endif
