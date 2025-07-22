@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Registrasi;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\RegistrasiImport;
-use Illuminate\Support\Facades\Storage;
 
 class RegistrasiController extends Controller
 {
@@ -31,7 +30,10 @@ class RegistrasiController extends Controller
 
         $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('foto_nasabah', 'public');
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('foto_nasabah'), $filename);
+            $fotoPath = 'foto_nasabah/' . $filename;
         }
 
         $registrasi = new Registrasi();
@@ -40,7 +42,7 @@ class RegistrasiController extends Controller
         $registrasi->nomer_telepon = $request->nomer_telepon;
         $registrasi->nomer_induk_nasabah = $request->nomer_induk_nasabah;
         $registrasi->tanggal = $request->tanggal;
-        $registrasi->foto = $fotoPath ? 'storage/' . $fotoPath : null;
+        $registrasi->foto = $fotoPath;
 
         if ($request->filled('password')) {
             $registrasi->password = Hash::make($request->password);
@@ -55,7 +57,6 @@ class RegistrasiController extends Controller
     {
         $data = Registrasi::findOrFail($id);
 
-        // Hapus file foto jika ada
         if ($data->foto && file_exists(public_path($data->foto))) {
             unlink(public_path($data->foto));
         }
@@ -85,13 +86,14 @@ class RegistrasiController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama
             if ($registrasi->foto && file_exists(public_path($registrasi->foto))) {
                 unlink(public_path($registrasi->foto));
             }
 
-            $fotoPath = $request->file('foto')->store('foto_nasabah', 'public');
-            $registrasi->foto = 'storage/' . $fotoPath;
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('foto_nasabah'), $filename);
+            $registrasi->foto = 'foto_nasabah/' . $filename;
         }
 
         $registrasi->nama_lengkap = $request->nama_lengkap;
