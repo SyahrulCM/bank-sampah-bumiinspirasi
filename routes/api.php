@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SampahController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\Api\TransaksiNasabahController;
+use App\Http\Controllers\Api\AuthNasabahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +18,7 @@ use App\Http\Controllers\TransaksiController;
 |
 */
 
-use App\Http\Controllers\Api\AuthNasabahController;
+
 
 // Login & Register (tanpa token)
 Route::post('/nasabah/login', [AuthNasabahController::class, 'login']);
