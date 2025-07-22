@@ -31,7 +31,16 @@ class RegistrasiController extends Controller
             'nomer_induk_nasabah' => 'required|string|max:50|unique:registrasis',
             'password' => 'required|string|min:6',
             'tanggal' => 'required|date',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $foto = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('uploads/registrasi'), $filename);
+            $foto = $filename;
+        }
 
         Registrasi::create([
             'nama_lengkap' => $request->nama_lengkap,
@@ -40,6 +49,7 @@ class RegistrasiController extends Controller
             'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
+            'foto' => $foto,
         ]);
 
         return redirect()->back()->with('sukses', 'Data registrasi berhasil disimpan.');
@@ -62,6 +72,7 @@ class RegistrasiController extends Controller
             'nomer_induk_nasabah' => 'required|string|max:50|unique:registrasis,nomer_induk_nasabah,' . $id_registrasi . ',id_registrasi',
             'tanggal' => 'required|date',
             'password' => 'nullable|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = [
@@ -72,9 +83,15 @@ class RegistrasiController extends Controller
             'tanggal' => $request->tanggal,
         ];
 
-        // Jika password diisi, update password-nya
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
+        }
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('uploads/registrasi'), $filename);
+            $data['foto'] = $filename;
         }
 
         Registrasi::where('id_registrasi', $id_registrasi)->update($data);

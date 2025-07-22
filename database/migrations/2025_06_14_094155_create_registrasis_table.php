@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('nomer_induk_nasabah');
             $table->string('password');
             $table->date('tanggal');
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

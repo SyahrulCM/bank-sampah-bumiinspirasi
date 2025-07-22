@@ -144,6 +144,11 @@
             <label>Password (Opsional)</label>
             <input type="password" name="password" class="form-control">
           </div>
+          <div class="form-group col-md-6">
+            <label>Foto (Upload atau Kamera)</label>
+            <input type="file" name="foto" class="form-control" accept="image/*" capture="environment">
+            <small class="text-muted">Bisa pilih file atau langsung ambil dari kamera.</small>
+          </div>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
