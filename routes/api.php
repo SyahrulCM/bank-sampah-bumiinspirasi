@@ -18,12 +18,16 @@ use App\Http\Controllers\TransaksiController;
 
 use App\Http\Controllers\Api\AuthNasabahController;
 
+// Login & Register (tanpa token)
 Route::post('/nasabah/login', [AuthNasabahController::class, 'login']);
 Route::post('/nasabah/register', [AuthNasabahController::class, 'register']);
 
+// Proteksi pakai token Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nasabah/logout', [AuthNasabahController::class, 'logout']);
     Route::get('/nasabah/profile', fn(Request $request) => $request->user());
 });
 
+// Public (data sampah)
 Route::get('/sampah', [SampahController::class, 'apiSampah']);
+

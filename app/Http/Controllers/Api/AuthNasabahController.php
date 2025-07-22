@@ -10,7 +10,6 @@ use App\Models\Registrasi;
 
 class AuthNasabahController extends Controller
 {
-    // Fungsi Login API
     public function login(Request $request)
     {
         $request->validate([
@@ -21,7 +20,7 @@ class AuthNasabahController extends Controller
         $user = Registrasi::where('nomer_induk_nasabah', $request->nomer_induk_nasabah)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Nomer induk atau password salah'], 401);
+            return response()->json(['message' => 'Nama pengguna atau password salah'], 401);
         }
 
         $token = $user->createToken('nasabah-token')->plainTextToken;
@@ -49,6 +48,7 @@ class AuthNasabahController extends Controller
             'alamat' => 'required',
             'nomer_telepon' => 'required',
             'nomer_induk_nasabah' => 'required|unique:registrasis',
+            'nama_pengguna' => 'required|unique:registrasis',
             'password' => 'required|min:6',
             'tanggal' => 'required|date',
         ]);
@@ -62,6 +62,7 @@ class AuthNasabahController extends Controller
             'alamat' => $request->alamat,
             'nomer_telepon' => $request->nomer_telepon,
             'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
+            'nama_pengguna' => $request->nama_pengguna,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
         ]);
@@ -75,4 +76,3 @@ class AuthNasabahController extends Controller
         ]);
     }
 }
-
