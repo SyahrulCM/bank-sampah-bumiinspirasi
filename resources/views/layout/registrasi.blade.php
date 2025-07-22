@@ -73,6 +73,7 @@
                 <th>No. Telepon</th>
                 <th>No. Induk Nasabah</th>
                 <th>Tanggal</th>
+                <th>Foto</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -86,6 +87,13 @@
                 <td>{{ $item->nomer_induk_nasabah }}</td>
                 <td>{{ $item->tanggal }}</td>
                 <td>
+                  @if($item->foto)
+                    <img src="{{ asset('uploads/registrasi/' . $item->foto) }}" alt="Foto" width="60" height="60" style="object-fit:cover;">
+                  @else
+                    -
+                  @endif
+                </td>
+                <td>
                   <div class="btn-group" role="group" aria-label="Aksi">
                     <a href="/registrasi/edit/{{ $item->id_registrasi }}" class="btn btn-sm btn-warning">Edit</a>
                     <a href="/registrasi/hapus/{{ $item->id_registrasi }}" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
@@ -95,7 +103,7 @@
               @endforeach
               @if($data->isEmpty())
               <tr>
-                <td colspan="7" class="text-center">Belum ada data registrasi.</td>
+                <td colspan="8" class="text-center">Belum ada data registrasi.</td>
               </tr>
               @endif
             </tbody>
