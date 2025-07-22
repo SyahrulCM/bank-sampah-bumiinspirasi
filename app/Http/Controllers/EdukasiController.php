@@ -43,7 +43,7 @@ class EdukasiController extends Controller
     public function edit($id)
     {
         $edukasi = Edukasi::where('id_edukasi', $id)->firstOrFail();
-        return view('edukasi.edit', compact('edukasi'));
+        return view('layout.edukasi_edit', compact('edukasi'));
     }
 
     public function update(Request $request, $id)
