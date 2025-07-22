@@ -15,7 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\LaporanSaldoController;
-
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\EdukasiController;
 
 
@@ -113,7 +113,11 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::post('/edukasi/update/{id}', [EdukasiController::class, 'update'])->name('edukasi.update');
     Route::delete('/edukasi/hapus/{id}', [EdukasiController::class, 'destroy'])->name('edukasi.destroy');
 
-
+    Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+    Route::post('/pengumuman/store', [PengumumanController::class, 'store'])->name('pengumuman.store');
+    Route::get('/pengumuman/edit/{id_pengumuman}', [PengumumanController::class, 'edit'])->name('pengumuman.edit');
+    Route::post('/pengumuman/update/{id_pengumuman}', [PengumumanController::class, 'update'])->name('pengumuman.update');
+    Route::delete('/pengumuman/hapus/{id_pengumuman}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy');
 
 
 });

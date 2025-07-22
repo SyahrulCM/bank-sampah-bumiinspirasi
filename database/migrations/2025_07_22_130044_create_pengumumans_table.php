@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('edukasis', function (Blueprint $table) {
-            $table->increments('id_edukasi');
+        Schema::create('pengumumans', function (Blueprint $table) {
+            $table->increments('id_pengumuman');
             $table->string('judul');
             $table->text('isi');
-            $table->string('foto')->nullable();
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('edukasis');
+        Schema::dropIfExists('pengumumans');
     }
 };
