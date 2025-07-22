@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\Registrasi;
 
 class AuthNasabahController extends Controller
 {
-    // Fungsi Login API
+
     public function login(Request $request)
     {
         $request->validate([
