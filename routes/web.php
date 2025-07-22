@@ -16,6 +16,8 @@ use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\LaporanSaldoController;
 
+ use App\Http\Controllers\Web\EdukasiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +105,13 @@ Route::middleware(['cekLogin'])->group(function () {
 
     Route::get('/laporan/saldo', [LaporanSaldoController::class, 'index'])->name('laporan.saldo');
     Route::get('/laporan-saldo/export-manual', [LaporanSaldoController::class, 'exportManualExcel'])->name('laporan-saldo.export-manual');
+
+
+    Route::get('/edukasi', [EdukasiController::class, 'index'])->name('edukasi.index');
+    Route::post('/edukasi/simpan', [EdukasiController::class, 'store'])->name('edukasi.store');
+    Route::get('/edukasi/edit/{id}', [EdukasiController::class, 'edit'])->name('edukasi.edit');
+    Route::post('/edukasi/update/{edukasi}', [EdukasiController::class, 'update'])->name('edukasi.update');
+    Route::get('/edukasi/hapus/{edukasi}', [EdukasiController::class, 'destroy'])->name('edukasi.hapus');
 
 
 
