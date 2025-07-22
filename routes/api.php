@@ -30,9 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nasabah/logout', [AuthNasabahController::class, 'logout']);
     Route::get('/nasabah/profile', fn(Request $request) => $request->user());
     Route::get('/nasabah/transaksi', [TransaksiNasabahController::class, 'getTransaksiNasabah']);
-    Route::get('/edukasi', [EdukasiController::class, 'apiEdukasi']);
+    
 });
 
 // Public (data sampah)
 Route::get('/sampah', [SampahController::class, 'apiSampah']);
+Route::get('/edukasi', [EdukasiController::class, 'apiEdukasi']);
 
