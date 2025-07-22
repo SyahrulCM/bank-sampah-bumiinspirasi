@@ -88,7 +88,7 @@
                 <td>{{ $item->tanggal }}</td>
                 <td>
                   @if($item->foto)
-                    <img src="{{ asset('uploads/registrasi/' . $item->foto) }}" alt="Foto" width="60" height="60" style="object-fit:cover;">
+                    <img src="{{ asset($item->foto) }}" alt="Foto Nasabah" width="60" height="60" style="object-fit: cover;">
                   @else
                     -
                   @endif

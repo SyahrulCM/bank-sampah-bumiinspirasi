@@ -34,12 +34,12 @@ class RegistrasiController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $foto = null;
+        $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/registrasi'), $filename);
-            $foto = $filename;
+            $foto = $request->file('foto');
+            $namaFoto = time() . '_' . $foto->getClientOriginalName();
+            $foto->move(public_path('uploads/registrasi'), $namaFoto);
+            $fotoPath = 'uploads/registrasi/' . $namaFoto;
         }
 
         Registrasi::create([
@@ -89,9 +89,9 @@ class RegistrasiController extends Controller
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time().'_'.$file->getClientOriginalName();
+            $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/registrasi'), $filename);
-            $data['foto'] = $filename;
+            $update['foto'] = 'uploads/registrasi/' . $filename; // <-- gunakan full path relatif
         }
 
         Registrasi::where('id_registrasi', $id_registrasi)->update($data);
