@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\URL;
 use App\Models\Registrasi;
 
 class AuthNasabahController extends Controller
 {
+    // Fungsi Login API
     public function login(Request $request)
     {
         $request->validate([
@@ -20,7 +22,7 @@ class AuthNasabahController extends Controller
         $user = Registrasi::where('nomer_induk_nasabah', $request->nomer_induk_nasabah)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Nama pengguna atau password salah'], 401);
+            return response()->json(['message' => 'Nomer induk atau password salah'], 401);
         }
 
         $token = $user->createToken('nasabah-token')->plainTextToken;
@@ -28,7 +30,17 @@ class AuthNasabahController extends Controller
         return response()->json([
             'message' => 'Login berhasil',
             'token' => $token,
-            'nasabah' => $user,
+            'nasabah' => [
+                'id_registrasi' => $user->id_registrasi,
+                'nama_lengkap' => $user->nama_lengkap,
+                'alamat' => $user->alamat,
+                'nomer_telepon' => $user->nomer_telepon,
+                'nomer_induk_nasabah' => $user->nomer_induk_nasabah,
+                'tanggal' => $user->tanggal,
+                'foto' => $user->foto ? URL::to($user->foto) : null,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ]
         ]);
     }
 
@@ -48,7 +60,6 @@ class AuthNasabahController extends Controller
             'alamat' => 'required',
             'nomer_telepon' => 'required',
             'nomer_induk_nasabah' => 'required|unique:registrasis',
-            'nama_pengguna' => 'required|unique:registrasis',
             'password' => 'required|min:6',
             'tanggal' => 'required|date',
         ]);
@@ -62,7 +73,6 @@ class AuthNasabahController extends Controller
             'alamat' => $request->alamat,
             'nomer_telepon' => $request->nomer_telepon,
             'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
-            'nama_pengguna' => $request->nama_pengguna,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
         ]);
@@ -72,7 +82,17 @@ class AuthNasabahController extends Controller
         return response()->json([
             'message' => 'Registrasi berhasil',
             'token' => $token,
-            'nasabah' => $nasabah
+            'nasabah' => [
+                'id_registrasi' => $nasabah->id_registrasi,
+                'nama_lengkap' => $nasabah->nama_lengkap,
+                'alamat' => $nasabah->alamat,
+                'nomer_telepon' => $nasabah->nomer_telepon,
+                'nomer_induk_nasabah' => $nasabah->nomer_induk_nasabah,
+                'tanggal' => $nasabah->tanggal,
+                'foto' => $nasabah->foto ? URL::to($nasabah->foto) : null,
+                'created_at' => $nasabah->created_at,
+                'updated_at' => $nasabah->updated_at,
+            ]
         ]);
     }
 }
