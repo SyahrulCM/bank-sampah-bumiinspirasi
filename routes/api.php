@@ -35,5 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Public (data sampah)
 Route::get('/sampah', [SampahController::class, 'apiSampah']);
-Route::get('/edukasi', [EdukasiController::class, 'apiEdukasi']);
+Route::get('/edukasi', [EdukasiApiController::class, 'apiEdukasi']);
 
