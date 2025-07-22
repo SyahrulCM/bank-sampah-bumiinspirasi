@@ -111,7 +111,7 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::post('/edukasi/simpan', [EdukasiController::class, 'store'])->name('edukasi.store');
     Route::get('/edukasi/edit/{id}', [EdukasiController::class, 'edit'])->name('edukasi.edit');
     Route::post('/edukasi/update/{id}', [EdukasiController::class, 'update'])->name('edukasi.update');
-    Route::get('/edukasi/hapus/{id}', [EdukasiController::class, 'destroy'])->name('edukasi.destroy');
+    Route::delete('/edukasi/hapus/{id}', [EdukasiController::class, 'destroy'])->name('edukasi.destroy');
 
 
 
