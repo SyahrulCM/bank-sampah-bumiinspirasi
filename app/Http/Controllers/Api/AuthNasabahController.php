@@ -54,8 +54,8 @@ class AuthNasabahController extends Controller
         return response()->json(['message' => 'Logout berhasil']);
     }
 
-    // (Opsional) Fungsi Register Nasabah via API
-    public function register(Request $request)
+
+        public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nama_lengkap' => 'required',
@@ -64,10 +64,19 @@ class AuthNasabahController extends Controller
             'nomer_induk_nasabah' => 'required|unique:registrasis',
             'password' => 'required|min:6',
             'tanggal' => 'required|date',
+            'foto' => 'nullable|image|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('foto_nasabah'), $filename);
+            $fotoPath = 'foto_nasabah/' . $filename;
         }
 
         $nasabah = Registrasi::create([
@@ -77,24 +86,19 @@ class AuthNasabahController extends Controller
             'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
+            'foto' => $fotoPath, // simpan path foto
         ]);
 
         $token = $nasabah->createToken('nasabah-token')->plainTextToken;
 
+        // Tambahkan URL lengkap pada foto
+        $nasabah->foto = $nasabah->foto ? asset($nasabah->foto) : null;
+
         return response()->json([
             'message' => 'Registrasi berhasil',
             'token' => $token,
-            'nasabah' => [
-                'id_registrasi' => $nasabah->id_registrasi,
-                'nama_lengkap' => $nasabah->nama_lengkap,
-                'alamat' => $nasabah->alamat,
-                'nomer_telepon' => $nasabah->nomer_telepon,
-                'nomer_induk_nasabah' => $nasabah->nomer_induk_nasabah,
-                'tanggal' => $nasabah->tanggal,
-                'foto' => $nasabah->foto ? URL::to($nasabah->foto) : null,
-                'created_at' => $nasabah->created_at,
-                'updated_at' => $nasabah->updated_at,
-            ]
+            'nasabah' => $nasabah
         ]);
     }
+
 }
