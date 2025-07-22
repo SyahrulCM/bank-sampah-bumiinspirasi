@@ -16,7 +16,7 @@ use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\PenarikanController;
 use App\Http\Controllers\LaporanSaldoController;
 
- use App\Http\Controllers\Web\EdukasiController;
+use App\Http\Controllers\EdukasiController;
 
 
 /*
