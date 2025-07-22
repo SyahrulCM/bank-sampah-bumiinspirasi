@@ -26,6 +26,7 @@ Route::post('/nasabah/register', [AuthNasabahController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nasabah/logout', [AuthNasabahController::class, 'logout']);
     Route::get('/nasabah/profile', fn(Request $request) => $request->user());
+      Route::get('/nasabah/transaksi', [TransaksiNasabahController::class, 'getTransaksiNasabah']);
 });
 
 // Public (data sampah)
