@@ -63,7 +63,6 @@
               Tambah
             </button>
           </div>
-          {{-- Tabel --}}
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -125,7 +124,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ route('registrasi.input') }}" method="POST">
+      <form action="{{ route('registrasi.input') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal-body row">
           <div class="form-group col-md-6">
@@ -149,8 +148,8 @@
             <input type="date" name="tanggal" class="form-control" required>
           </div>
           <div class="form-group col-md-6">
-            <label>Password (Opsional)</label>
-            <input type="password" name="password" class="form-control">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
           </div>
           <div class="form-group col-md-6">
             <label>Foto (Upload atau Kamera)</label>
