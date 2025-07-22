@@ -11,7 +11,7 @@ class EdukasiController extends Controller
     public function index()
     {
         $edukasis = Edukasi::orderBy('id_edukasi', 'asc')->get();
-        return view('edukasi.index', compact('edukasis'));
+        return view('layout.edukasi', compact('edukasis'));
     }
 
     public function store(Request $request)
