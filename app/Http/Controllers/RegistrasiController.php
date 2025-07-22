@@ -24,6 +24,7 @@ class RegistrasiController extends Controller
     // Fungsi input registrasi manual
     public function inputRegistrasi(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'alamat' => 'required|string',
@@ -49,7 +50,7 @@ class RegistrasiController extends Controller
             'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
-            'foto' => $foto,
+            'foto' => $fotoPath,
         ]);
 
         return redirect()->back()->with('sukses', 'Data registrasi berhasil disimpan.');
