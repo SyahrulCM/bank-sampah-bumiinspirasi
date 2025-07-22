@@ -7,6 +7,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\Api\TransaksiNasabahController;
 use App\Http\Controllers\Api\AuthNasabahController;
 use App\Http\Controllers\Api\EdukasiApiController;
+use App\Http\Controllers\Api\PengumumanApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
 // Public (data sampah)
 Route::get('/sampah', [SampahController::class, 'apiSampah']);
 Route::get('/edukasi', [EdukasiApiController::class, 'apiEdukasi']);
+Route::get('/pengumuman', [PengumumanApiController::class, 'apiIndex']);
 
