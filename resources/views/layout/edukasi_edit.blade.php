@@ -14,7 +14,7 @@
           <h3 class="card-title">Form Edit Edukasi</h3>
         </div>
 
-        <form action="{{ route('edukasi.update', $edukasi->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('edukasi.update', $edukasi->id_edukasi) }}" method="POST" enctype="multipart/form-data">
           @csrf
           <div class="card-body">
             <div class="form-group">
