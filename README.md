@@ -7,74 +7,16 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# 📱 Mobile API - Bank Sampah Bumi Inspirasi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
-# 📱 Mobile API Documentation
-
-Berikut adalah dokumentasi endpoint untuk mengakses fitur API dari aplikasi **Manajemen Sampah Bumi Inspirasi**. Semua endpoint dilindungi dengan autentikasi menggunakan **Laravel Sanctum**.
+Dokumentasi API untuk aplikasi mobile Bank Sampah Bumi Inspirasi.
 
 ---
 
 ## 🔐 Autentikasi
 
-Semua endpoint (kecuali login) memerlukan header berikut:
+Semua endpoint (kecuali register dan login) membutuhkan token Bearer:
 
 ```
 Authorization: Bearer {token}
@@ -82,13 +24,44 @@ Authorization: Bearer {token}
 
 ---
 
-## 📌 Auth API
+## ✅ REGISTER
 
-### 🔑 POST `/api/login`
+**POST** `/api/nasabah/register`
 
-Autentikasi pengguna (nasabah).
+```json
+{
+  "nama_lengkap": "Edward Woda",
+  "alamat": "Sekeloa",
+  "nomer_telepon": "081903421111",
+  "email": "edward@example.com",
+  "password": "123456",
+  "tanggal": "2025-07-22"
+}
+```
 
-#### Body (JSON):
+**Response:**
+
+```json
+{
+  "message": "Registrasi berhasil",
+  "token": "2|FB6DCpsvEt...",
+  "nasabah": {
+    "id_registrasi": 3,
+    "nama_lengkap": "Edward Woda",
+    "alamat": "Sekeloa",
+    "nomer_telepon": "081903421111",
+    "nomer_induk_nasabah": "NS0003",
+    "tanggal": "2025-07-22",
+    "foto": null
+  }
+}
+```
+
+---
+
+## 🔑 LOGIN
+
+**POST** `/api/nasabah/login`
 
 ```json
 {
@@ -97,34 +70,78 @@ Autentikasi pengguna (nasabah).
 }
 ```
 
-#### Response (200 OK):
+**Response:**
 
 ```json
 {
-  "status": true,
-  "token": "...",
-  "user": {
+  "message": "Login berhasil",
+  "token": "1|qFmMxCHVI4...",
+  "nasabah": {
     "id_registrasi": 1,
-    "nama_lengkap": "Nama Nasabah"
+    "nama_lengkap": "Syahrul Choliq Mawardi",
+    "alamat": "Jl. Rancabogo",
+    "nomer_telepon": "081904526785",
+    "nomer_induk_nasabah": "NS0001",
+    "tanggal": "2025-07-23",
+    "foto": null
   }
 }
 ```
 
 ---
 
-## 💸 Penarikan
+## 👤 PROFILE
 
-### 📤 POST `/api/penarikan`
+**GET** `/api/nasabah/profile`
 
-Mengajukan penarikan saldo oleh nasabah.
-
-#### Header:
-
+```json
+{
+  "id_registrasi": 1,
+  "nama_lengkap": "Syahrul Choliq Mawardi",
+  "alamat": "Jl. Rancabogo",
+  "nomer_telepon": "081904526785",
+  "nomer_induk_nasabah": "NS0001",
+  "tanggal": "2025-07-23",
+  "foto": null
+}
 ```
-Authorization: Bearer {token}
+
+---
+
+## 💰 TRANSAKSI
+
+**GET** `/api/nasabah/transaksi`
+
+```json
+{
+  "message": "Data transaksi nasabah",
+  "data": [
+    {
+      "id_transaksi": 1,
+      "tanggal": "2025-07-23",
+      "saldo": 13620,
+      "detail_transaksi": [
+        {
+          "berat_sampah": 12,
+          "jumlah_setoran": 3,
+          "sampah": {
+            "jenis_sampah": "Plastik",
+            "harga_ditabung": 960
+          }
+        }
+      ]
+    }
+  ]
+}
 ```
 
-#### Body (JSON):
+---
+
+## 💸 PENARIKAN
+
+### 🧾 Ajukan Penarikan
+
+**POST** `/api/penarikan`
 
 ```json
 {
@@ -133,44 +150,23 @@ Authorization: Bearer {token}
 }
 ```
 
-#### Response (200 OK):
+**Response:**
 
 ```json
 {
   "status": true,
   "message": "Penarikan berhasil diajukan.",
   "data": {
-    "id_penarikan": 1,
     "jumlah": 10000,
-    "tanggal": "2025-07-22",
     "status": "pending",
     "keterangan": "Penarikan via mobile"
   }
 }
 ```
 
-#### Response (422 Error):
+### 🕓 Riwayat Penarikan
 
-```json
-{
-  "status": false,
-  "message": "Saldo tidak mencukupi untuk melakukan penarikan."
-}
-```
-
----
-
-### 📄 GET `/api/penarikan/histori`
-
-Menampilkan histori penarikan nasabah.
-
-#### Header:
-
-```
-Authorization: Bearer {token}
-```
-
-#### Response:
+**GET** `/api/penarikan/histori`
 
 ```json
 {
@@ -179,14 +175,12 @@ Authorization: Bearer {token}
     {
       "tanggal": "2025-07-20",
       "jumlah": 15000,
-      "status": "disetujui",
-      "keterangan": "Penarikan mingguan"
+      "status": "disetujui"
     },
     {
       "tanggal": "2025-07-21",
       "jumlah": 10000,
       "status": "ditolak",
-      "keterangan": "Penarikan ditolak",
       "alasan_ditolak": "Saldo belum mencukupi"
     }
   ]
@@ -195,15 +189,71 @@ Authorization: Bearer {token}
 
 ---
 
-## ✅ Status Penarikan
+## 🗑️ SAMPAH
 
-Status penarikan yang mungkin muncul:
+**GET** `/api/sampah`
 
-* `pending` → Belum divalidasi oleh admin.
-* `disetujui` → Sudah disetujui dan saldo dikurangi.
-* `ditolak` → Permintaan ditolak, biasanya disertai alasan.
+```json
+{
+  "data": [
+    {
+      "jenis_sampah": "Plastik",
+      "harga_pengepul_rp": "Rp 1.200",
+      "harga_ditabung_rp": "Rp 960",
+      "deskripsi": "Sampah Plastik"
+    }
+  ]
+}
+```
 
 ---
 
-📝 *Dokumentasi ini akan diperbarui seiring penambahan fitur.*
+## 📚 EDUKASI
+
+**GET** `/api/edukasi`
+
+```json
+{
+  "data": [
+    {
+      "judul": "Sampah Plastik",
+      "isi": "Edukasi tentang dampak dan pengelolaan sampah plastik."
+    }
+  ]
+}
+```
+
+---
+
+## 📢 PENGUMUMAN
+
+**GET** `/api/pengumuman`
+
+```json
+{
+  "data": [
+    {
+      "judul": "Libur",
+      "isi": "Tidak ada kegiatan pada hari Minggu",
+      "status": "aktif"
+    }
+  ]
+}
+```
+
+---
+
+## 📊 STATUS PENARIKAN
+
+- `pending` → Menunggu validasi
+- `disetujui` → Berhasil
+- `ditolak` → Gagal (dengan alasan)
+
+---
+
+📝 Dokumentasi ini akan terus diperbarui jika ada fitur baru.
+
+
+
+
 
