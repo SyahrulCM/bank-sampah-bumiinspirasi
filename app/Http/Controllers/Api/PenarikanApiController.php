@@ -51,4 +51,18 @@ class PenarikanApiController extends Controller
             'data' => $penarikan
         ], 201);
     }
+
+    public function histori()
+    {
+        $user = Auth::user();
+
+        $penarikans = Penarikan::where('id_registrasi', $user->id_registrasi)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'message' => 'Histori penarikan berhasil diambil.',
+            'data' => $penarikans
+        ]);
+    }
 }

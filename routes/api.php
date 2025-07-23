@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TransaksiNasabahController;
 use App\Http\Controllers\Api\AuthNasabahController;
 use App\Http\Controllers\Api\EdukasiApiController;
 use App\Http\Controllers\Api\PengumumanApiController;
+use App\Http\Controllers\Api\PenarikanApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/nasabah/profile', fn(Request $request) => $request->user());
     Route::get('/nasabah/transaksi', [TransaksiNasabahController::class, 'getTransaksiNasabah']);
     Route::post('/penarikan', [PenarikanApiController::class, 'store']);
+    Route::get('/penarikan/histori', [PenarikanApiController::class, 'histori']);
     
 });
 
