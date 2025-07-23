@@ -10,6 +10,7 @@ class Penarikan extends Model
     use HasFactory;
 
     protected $table = 'penarikans';
+    protected $primaryKey = 'id_penarikan';
 
     protected $fillable = [
         'id_registrasi',
