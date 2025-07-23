@@ -102,6 +102,9 @@ Route::middleware(['cekLogin'])->group(function () {
 
     Route::get('/penarikan', [PenarikanController::class, 'index'])->name('penarikan.index');
     Route::post('/penarikan/simpan', [PenarikanController::class, 'store'])->name('penarikan.store');
+    Route::post('/penarikan/validasi/{id_penarikan}', [PenarikanController::class, 'validasi'])->name('penarikan.validasi');
+
+
 
     Route::get('/laporan/saldo', [LaporanSaldoController::class, 'index'])->name('laporan.saldo');
     Route::get('/laporan-saldo/export-manual', [LaporanSaldoController::class, 'exportManualExcel'])->name('laporan-saldo.export-manual');

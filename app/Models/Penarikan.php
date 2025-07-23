@@ -16,6 +16,8 @@ class Penarikan extends Model
         'jumlah',
         'tanggal',
         'keterangan',
+        'status',
+        'alasan_ditolak',
     ];
 
     // Relasi ke model Registrasi

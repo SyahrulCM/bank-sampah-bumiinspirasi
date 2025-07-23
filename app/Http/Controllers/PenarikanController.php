@@ -21,44 +21,74 @@ class PenarikanController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'id_registrasi' => 'required|exists:registrasis,id_registrasi',
-        'jumlah' => 'required|numeric|min:1000',
-    ]);
+    {
+        $request->validate([
+            'id_registrasi' => 'required|exists:registrasis,id_registrasi',
+            'jumlah' => 'required|numeric|min:1000',
+        ]);
 
-    $registrasiId = $request->id_registrasi;
+        $registrasiId = $request->id_registrasi;
 
-    // Hitung jumlah setoran nasabah dari detail_transaksi
-    $jumlahSetoran = DB::table('detail_transaksis')
-        ->join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id_transaksi')
-        ->where('transaksis.id_registrasi', $registrasiId)
-        ->sum('detail_transaksis.jumlah_setoran');
+        // Hitung jumlah setoran nasabah dari detail_transaksi
+        $jumlahSetoran = DB::table('detail_transaksis')
+            ->join('transaksis', 'detail_transaksis.id_transaksi', '=', 'transaksis.id_transaksi')
+            ->where('transaksis.id_registrasi', $registrasiId)
+            ->sum('detail_transaksis.jumlah_setoran');
 
-    if ($jumlahSetoran < 2) {
-        return redirect()->back()->with('error', 'Penarikan hanya bisa dilakukan setelah melakukan setoran lebih dari satu kali.');
+        if ($jumlahSetoran < 2) {
+            return redirect()->back()->with('error', 'Penarikan hanya bisa dilakukan setelah melakukan setoran lebih dari satu kali.');
+        }
+
+        // Ambil transaksi terakhir
+        $transaksiTerakhir = Transaksi::where('id_registrasi', $registrasiId)->latest()->first();
+
+        if (!$transaksiTerakhir || $transaksiTerakhir->saldo < $request->jumlah) {
+            return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk melakukan penarikan.');
+        }
+
+        // Simpan penarikan (status default 'pending')
+        Penarikan::create([
+            'id_registrasi' => $registrasiId,
+            'jumlah' => $request->jumlah,
+            'tanggal' => Carbon::now()->toDateString(),
+            'keterangan' => $request->keterangan ?? 'Penarikan saldo oleh nasabah',
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('penarikan.index')->with('sukses', 'Penarikan berhasil disimpan dan menunggu validasi.');
     }
 
-    // Ambil transaksi terakhir
-    $transaksiTerakhir = Transaksi::where('id_registrasi', $registrasiId)->latest()->first();
+    public function validasi(Request $request, $id_penarikan)
+    {
+        $request->validate([
+            'status' => 'required|in:disetujui,ditolak',
+            'alasan_ditolak' => 'required_if:status,ditolak'
+        ]);
 
-    if (!$transaksiTerakhir || $transaksiTerakhir->saldo < $request->jumlah) {
-        return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk melakukan penarikan.');
+        $penarikan = Penarikan::with('registrasi')->findOrFail($id_penarikan);
+
+        if ($request->status === 'disetujui') {
+            $transaksi = Transaksi::where('id_registrasi', $penarikan->id_registrasi)->latest()->first();
+
+            if (!$transaksi || $transaksi->saldo < $penarikan->jumlah) {
+                return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk menyetujui penarikan.');
+            }
+
+            // Kurangi saldo nasabah
+            $transaksi->saldo -= $penarikan->jumlah;
+            $transaksi->save();
+
+            // Update status
+            $penarikan->status = 'disetujui';
+            $penarikan->alasan_ditolak = null;
+        } else {
+            // Jika ditolak
+            $penarikan->status = 'ditolak';
+            $penarikan->alasan_ditolak = $request->alasan_ditolak;
+        }
+
+        $penarikan->save();
+
+        return redirect()->route('penarikan.index')->with('sukses', 'Status penarikan berhasil divalidasi.');
     }
-
-    // Simpan penarikan
-    Penarikan::create([
-        'id_registrasi' => $registrasiId,
-        'jumlah' => $request->jumlah,
-        'tanggal' => Carbon::now()->toDateString(),
-        'keterangan' => $request->keterangan ?? 'Penarikan saldo oleh nasabah',
-    ]);
-
-    // Kurangi saldo
-    $transaksiTerakhir->saldo -= $request->jumlah;
-    $transaksiTerakhir->save();
-
-    return redirect()->route('penarikan.index')->with('sukses', 'Penarikan berhasil disimpan.');
-}
-
 }

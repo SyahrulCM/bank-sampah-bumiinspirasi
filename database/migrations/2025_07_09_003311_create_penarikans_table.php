@@ -18,6 +18,8 @@ return new class extends Migration
             $table->decimal('jumlah', 12, 2);
             $table->date('tanggal');
             $table->text('keterangan')->nullable();
+            $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->text('alasan_ditolak')->nullable();
             $table->timestamps();
         });
     }
