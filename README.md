@@ -30,10 +30,9 @@ Authorization: Bearer {token}
 
 ```json
 {
-  "nama_lengkap": "Edward Woda",
-  "alamat": "Sekeloa",
+  "nama_lengkap": "Syahrul Barnacleboy",
+  "alamat": "Ngamprah",
   "nomer_telepon": "081903421111",
-  "email": "edward@example.com",
   "password": "123456",
   "tanggal": "2025-07-22"
 }
@@ -47,8 +46,8 @@ Authorization: Bearer {token}
   "token": "2|FB6DCpsvEt...",
   "nasabah": {
     "id_registrasi": 3,
-    "nama_lengkap": "Edward Woda",
-    "alamat": "Sekeloa",
+    "nama_lengkap": "Syahrul Barnacleboy",
+    "alamat": "Ngamprah",
     "nomer_telepon": "081903421111",
     "nomer_induk_nasabah": "NS0003",
     "tanggal": "2025-07-22",
