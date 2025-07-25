@@ -101,4 +101,41 @@ class AuthNasabahController extends Controller
         ]);
     }
 
+    public function editProfile(Request $request)
+    {
+        $user = $request->user();
+        $validator = Validator::make($request->all(), [
+            'nama_lengkap' => 'sometimes|required',
+            'alamat' => 'sometimes|required',
+            'nomer_telepon' => 'sometimes|required',
+            'tanggal' => 'sometimes|required|date',
+            'password' => 'nullable|min:6',
+            'foto' => 'nullable|image|max:2048',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        if ($request->has('nama_lengkap')) $user->nama_lengkap = $request->nama_lengkap;
+        if ($request->has('alamat')) $user->alamat = $request->alamat;
+        if ($request->has('nomer_telepon')) $user->nomer_telepon = $request->nomer_telepon;
+        if ($request->has('tanggal')) $user->tanggal = $request->tanggal;
+        if ($request->filled('password')) $user->password = bcrypt($request->password);
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('foto_nasabah'), $filename);
+            $user->foto = 'foto_nasabah/' . $filename;
+        }
+
+        $user->save();
+        $user->foto = $user->foto ? asset($user->foto) : null;
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'nasabah' => $user
+        ]);
+    }
+
 }
