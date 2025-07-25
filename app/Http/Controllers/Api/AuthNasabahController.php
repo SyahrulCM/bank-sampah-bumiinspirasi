@@ -105,10 +105,10 @@ class AuthNasabahController extends Controller
     {
         $user = $request->user();
         $validator = Validator::make($request->all(), [
-            'nama_lengkap' => 'sometimes|required',
-            'alamat' => 'sometimes|required',
-            'nomer_telepon' => 'sometimes|required',
-            'tanggal' => 'sometimes|required|date',
+            'nama_lengkap' => 'sometimes',
+            'alamat' => 'sometimes',
+            'nomer_telepon' => 'sometimes',
+            'tanggal' => 'sometimes|date',
             'password' => 'nullable|min:6',
             'foto' => 'nullable|image|max:2048',
         ]);
