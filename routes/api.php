@@ -31,9 +31,11 @@ Route::post('/nasabah/register', [AuthNasabahController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nasabah/logout', [AuthNasabahController::class, 'logout']);
     Route::get('/nasabah/profile', fn(Request $request) => $request->user());
+    Route::post('/nasabah/edit-profile', [AuthNasabahController::class, 'editProfile']);
     Route::get('/nasabah/transaksi', [TransaksiNasabahController::class, 'getTransaksiNasabah']);
     Route::post('/penarikan', [PenarikanApiController::class, 'store']);
     Route::get('/penarikan/histori', [PenarikanApiController::class, 'histori']);
+    
     
 });
 
