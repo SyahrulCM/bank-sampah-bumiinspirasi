@@ -100,9 +100,14 @@ class TransaksiController extends Controller
                 $totalSaldoBaru += $beratBaru * $harga;
             }
 
-            // Tambahkan ke saldo lama
+            // Tambahkan ke saldo transaksi
             $transaksi->saldo += $totalSaldoBaru;
             $transaksi->save();
+
+            // ✅ Tambahkan saldo ke nasabah
+            $nasabah = Registrasi::find($request->id_registrasi);
+            $nasabah->saldo += $totalSaldoBaru;
+            $nasabah->save();
 
             DB::commit();
 
@@ -126,6 +131,7 @@ class TransaksiController extends Controller
         try {
             $transaksi = Transaksi::with('detailTransaksi')->findOrFail($id);
 
+            // Kurangi stok sampah
             foreach ($transaksi->detailTransaksi as $detail) {
                 $stok = Stok::where('id_sampah', $detail->id_sampah)->first();
                 if ($stok) {
@@ -135,6 +141,15 @@ class TransaksiController extends Controller
                 }
             }
 
+            // Kurangi saldo nasabah
+            $nasabah = Registrasi::find($transaksi->id_registrasi);
+            if ($nasabah) {
+                $nasabah->saldo -= $transaksi->saldo;
+                if ($nasabah->saldo < 0) $nasabah->saldo = 0;
+                $nasabah->save();
+            }
+
+            // Hapus detail dan transaksi
             DetailTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
             $transaksi->delete();
 
@@ -145,6 +160,7 @@ class TransaksiController extends Controller
             return back()->with('error', 'Gagal menghapus transaksi: ' . $e->getMessage());
         }
     }
+
 
     public function exportManualExcel(Request $request)
     {

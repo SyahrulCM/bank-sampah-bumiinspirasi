@@ -72,6 +72,7 @@
                 <th>No. Telepon</th>
                 <th>No. Induk Nasabah</th>
                 <th>Tanggal</th>
+                <th>Saldo</th> {{-- Tambahkan kolom saldo di sini --}}
                 <th>Foto</th>
                 <th>Aksi</th>
               </tr>
@@ -85,6 +86,7 @@
                 <td>{{ $item->nomer_telepon }}</td>
                 <td>{{ $item->nomer_induk_nasabah }}</td>
                 <td>{{ $item->tanggal }}</td>
+                <td>Rp {{ number_format($item->saldo ?? 0, 0, ',', '.') }}</td> {{-- Saldo default 0 jika null --}}
                 <td>
                   @if($item->foto)
                     <img src="{{ asset($item->foto) }}" alt="Foto Nasabah" width="60" height="60" style="object-fit: cover;">
@@ -102,7 +104,7 @@
               @endforeach
               @if($data->isEmpty())
               <tr>
-                <td colspan="8" class="text-center">Belum ada data registrasi.</td>
+                <td colspan="9" class="text-center">Belum ada data registrasi.</td>
               </tr>
               @endif
             </tbody>

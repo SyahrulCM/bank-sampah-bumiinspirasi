@@ -14,6 +14,6 @@ class Registrasi extends Model
     protected $primaryKey = 'id_registrasi';
 
     protected $fillable = [
-        'nama_lengkap', 'alamat', 'nomer_telepon', 'nomer_induk_nasabah', 'password', 'tanggal', 'foto'
+        'nama_lengkap', 'alamat', 'nomer_telepon', 'nomer_induk_nasabah', 'password', 'tanggal'.'saldo', 'foto'
     ];
 }
