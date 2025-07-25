@@ -108,7 +108,7 @@ class AuthNasabahController extends Controller
             'nama_lengkap' => 'sometimes',
             'alamat' => 'sometimes',
             'nomer_telepon' => 'sometimes',
-            'tanggal' => 'sometimes|date',
+            'tanggal' => 'sometimes|nullable|date',
             'password' => 'nullable|min:6',
             'foto' => 'nullable|image|max:2048',
         ]);
