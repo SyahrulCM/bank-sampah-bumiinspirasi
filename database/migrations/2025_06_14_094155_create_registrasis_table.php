@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->text('alamat');
             $table->string('nomer_telepon');
-            $table->string('nomer_induk_nasabah');
+            $table->string('nomer_induk_nasabah')->nullable();
             $table->string('password');
             $table->date('tanggal');
             $table->bigInteger('saldo')->nullable();
