@@ -60,8 +60,8 @@
   @elseif(session('role') === 'Operasional')
     @include('menu.operasional')
   @elseif(session('role') === 'Founder')
-  @include('menu.founder')
-  @endif
+    @include('menu.founder')
+  @endif 
 
   <!-- Content -->
   @yield('content')

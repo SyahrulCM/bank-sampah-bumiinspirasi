@@ -66,7 +66,7 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::get('/registrasi/edit/{id_registrasi}', [RegistrasiController::class, 'editRegistrasi'])->name('registrasi.edit');
     Route::post('/registrasi/update/{id_registrasi}', [RegistrasiController::class, 'updateRegistrasi'])->name('registrasi.update');
     Route::get('/registrasi/hapus/{id_registrasi}', [RegistrasiController::class, 'hapusRegistrasi'])->name('registrasi.hapus');
-    Route::post('/registrasi/import', [RegistrasiController::class, 'importExcel'])->name('registrasi.import');
+    Route::post('/registrasi/import', [RegistrasiController::class, 'importRegistrasi'])->name('registrasi.import');
     Route::post('/registrasi/validasi/{id_registrasi}', [RegistrasiController::class, 'simpanValidasi'])->name('registrasi.validasi.simpan');
 
 
