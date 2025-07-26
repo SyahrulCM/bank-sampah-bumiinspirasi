@@ -32,8 +32,6 @@
 
   <section class="content">
     <div class="container-fluid">
-
-      {{-- Card Import Excel --}}
       <div class="card mb-3">
         <div class="card-header bg-info text-white">
           <h3 class="card-title">Import Data Registrasi dari Excel</h3>
@@ -52,7 +50,6 @@
         </form>
       </div>
 
-      {{-- Card Data Registrasi --}}
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Data Registrasi Nasabah</h3>
@@ -68,12 +65,8 @@
               <tr>
                 <th>No</th>
                 <th>Nama Lengkap</th>
-                <th>Alamat</th>
-                <th>No. Telepon</th>
                 <th>No. Induk Nasabah</th>
-                <th>Tanggal</th>
-                <th>Saldo</th> {{-- Tambahkan kolom saldo di sini --}}
-                <th>Foto</th>
+                <th>Saldo</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -82,36 +75,88 @@
               <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $item->nama_lengkap }}</td>
-                <td>{{ $item->alamat }}</td>
-                <td>{{ $item->nomer_telepon }}</td>
-                <td>{{ $item->nomer_induk_nasabah }}</td>
-                <td>{{ $item->tanggal }}</td>
-                <td>Rp {{ number_format($item->saldo ?? 0, 0, ',', '.') }}</td> {{-- Saldo default 0 jika null --}}
+                <td>{{ $item->nomer_induk_nasabah ?? '-' }}</td>
+                <td>Rp {{ number_format($item->saldo ?? 0, 0, ',', '.') }}</td>
                 <td>
-                  @if($item->foto)
-                    <img src="{{ asset($item->foto) }}" alt="Foto Nasabah" width="60" height="60" style="object-fit: cover;">
-                  @else
-                    -
-                  @endif
-                </td>
-                <td>
-                  <div class="btn-group" role="group" aria-label="Aksi">
+                  <div class="btn-group mb-1" role="group">
+                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal{{ $item->id_registrasi }}">Detail</button>
+                    @if(!$item->nomer_induk_nasabah)
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#validasiModal{{ $item->id_registrasi }}">Validasi</button>
+                    @endif
                     <a href="/registrasi/edit/{{ $item->id_registrasi }}" class="btn btn-sm btn-warning">Edit</a>
                     <a href="/registrasi/hapus/{{ $item->id_registrasi }}" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
                   </div>
                 </td>
               </tr>
+
+              {{-- Modal Detail --}}
+              <div class="modal fade" id="detailModal{{ $item->id_registrasi }}" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                      <h5 class="modal-title">Detail Nasabah</h5>
+                      <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body row">
+                      <div class="col-md-6">
+                        <p><strong>Nama:</strong> {{ $item->nama_lengkap }}</p>
+                        <p><strong>Alamat:</strong> {{ $item->alamat }}</p>
+                        <p><strong>No Telepon:</strong> {{ $item->nomer_telepon }}</p>
+                        <p><strong>No Induk Nasabah:</strong> {{ $item->nomer_induk_nasabah ?? '-' }}</p>
+                        <p><strong>Tanggal:</strong> {{ $item->tanggal }}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <p><strong>Saldo:</strong> Rp {{ number_format($item->saldo ?? 0, 0, ',', '.') }}</p>
+                        <p><strong>Foto:</strong></p>
+                        @if($item->foto)
+                          <img src="{{ asset($item->foto) }}" class="img-fluid" style="max-width: 200px;">
+                        @else
+                          <p>-</p>
+                        @endif
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{-- Modal Validasi --}}
+              <div class="modal fade" id="validasiModal{{ $item->id_registrasi }}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form action="{{ route('registrasi.validasi.simpan', $item->id_registrasi) }}" method="POST">
+                      @csrf
+                      <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Validasi Nomor Induk Nasabah</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label>Masukkan Nomor Induk Nasabah</label>
+                          <input type="text" name="nomer_induk_nasabah" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
               @endforeach
               @if($data->isEmpty())
               <tr>
-                <td colspan="9" class="text-center">Belum ada data registrasi.</td>
+                <td colspan="5" class="text-center">Belum ada data registrasi.</td>
               </tr>
               @endif
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </section>
 </div>
@@ -120,14 +165,12 @@
 <div class="modal fade" id="modal-lg">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Form Registrasi Baru</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
       <form action="{{ route('registrasi.input') }}" method="POST" enctype="multipart/form-data">
         @csrf
+        <div class="modal-header">
+          <h4 class="modal-title">Form Registrasi Baru</h4>
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        </div>
         <div class="modal-body row">
           <div class="form-group col-md-6">
             <label>Nama Lengkap</label>
@@ -143,7 +186,8 @@
           </div>
           <div class="form-group col-md-6">
             <label>No. Induk Nasabah</label>
-            <input type="text" name="nomer_induk_nasabah" class="form-control" required>
+            <input type="text" name="nomer_induk_nasabah" class="form-control">
+            <small class="text-muted">Kosongkan jika ingin divalidasi nanti</small>
           </div>
           <div class="form-group col-md-6">
             <label>Tanggal</label>
@@ -156,10 +200,10 @@
           <div class="form-group col-md-6">
             <label>Foto (Upload atau Kamera)</label>
             <input type="file" name="foto" class="form-control" accept="image/*" capture="environment">
-            <small class="text-muted">Bisa pilih file atau langsung ambil dari kamera.</small>
+            <small class="text-muted">Bisa pilih file atau langsung ambil dari kamera jika di buka dari Handphone.</small>
           </div>
         </div>
-        <div class="modal-footer justify-content-between">
+        <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
           <button type="submit" class="btn btn-success">Simpan</button>
         </div>

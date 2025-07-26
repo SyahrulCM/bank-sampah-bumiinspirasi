@@ -121,4 +121,18 @@ class RegistrasiController extends Controller
 
         return redirect()->back()->with('sukses', 'Data berhasil diimport!');
     }
+
+    // Tambahan: Fitur Validasi dari Modal
+    public function simpanValidasi(Request $request, $id)
+    {
+        $request->validate([
+            'nomer_induk_nasabah' => 'required|unique:registrasis,nomer_induk_nasabah',
+        ]);
+
+        $data = Registrasi::findOrFail($id);
+        $data->nomer_induk_nasabah = $request->nomer_induk_nasabah;
+        $data->save();
+
+        return redirect()->route('registrasi.index')->with('sukses', 'Validasi berhasil dilakukan!');
+    }
 }

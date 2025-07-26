@@ -12,11 +12,6 @@
   .select2-container--default .select2-selection--single .select2-selection__rendered {
       line-height: 24px;
   }
-
-  .dataTables_wrapper .dataTables_filter {
-    display: flex;
-    justify-content: flex-end;
-  }
 </style>
 
 <div class="content-wrapper">
