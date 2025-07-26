@@ -7,13 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Storage;
 
 use App\Models\Registrasi;
 
 class AuthNasabahController extends Controller
 {
-
     public function login(Request $request)
     {
         $request->validate([
@@ -39,6 +37,7 @@ class AuthNasabahController extends Controller
                 'nomer_telepon' => $user->nomer_telepon,
                 'nomer_induk_nasabah' => $user->nomer_induk_nasabah,
                 'tanggal' => $user->tanggal,
+                'saldo' => $user->saldo,
                 'foto' => $user->foto ? URL::to($user->foto) : null,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
@@ -46,7 +45,6 @@ class AuthNasabahController extends Controller
         ]);
     }
 
-    // Fungsi Logout API
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -54,14 +52,13 @@ class AuthNasabahController extends Controller
         return response()->json(['message' => 'Logout berhasil']);
     }
 
-
-        public function register(Request $request)
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nama_lengkap' => 'required',
             'alamat' => 'required',
             'nomer_telepon' => 'required',
-            'nomer_induk_nasabah' => 'required|unique:registrasis',
+            'nomer_induk_nasabah' => 'nullable|unique:registrasis,nomer_induk_nasabah',
             'password' => 'required|min:6',
             'tanggal' => 'required|date',
             'foto' => 'nullable|image|max:2048',
@@ -83,19 +80,18 @@ class AuthNasabahController extends Controller
             'nama_lengkap' => $request->nama_lengkap,
             'alamat' => $request->alamat,
             'nomer_telepon' => $request->nomer_telepon,
-            'nomer_induk_nasabah' => $request->nomer_induk_nasabah,
+            'nomer_induk_nasabah' => $request->nomer_induk_nasabah ?? null,
             'password' => bcrypt($request->password),
             'tanggal' => $request->tanggal,
-            'foto' => $fotoPath, // simpan path foto
+            'foto' => $fotoPath,
+            'saldo' => 0,
         ]);
 
         $token = $nasabah->createToken('nasabah-token')->plainTextToken;
-
-        // Tambahkan URL lengkap pada foto
         $nasabah->foto = $nasabah->foto ? asset($nasabah->foto) : null;
 
         return response()->json([
-            'message' => 'Registrasi berhasil',
+            'message' => 'Registrasi berhasil, menunggu validasi nomor induk',
             'token' => $token,
             'nasabah' => $nasabah
         ]);
@@ -112,6 +108,7 @@ class AuthNasabahController extends Controller
             'password' => 'nullable|min:6',
             'foto' => 'nullable|image|max:2048',
         ]);
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
@@ -137,5 +134,4 @@ class AuthNasabahController extends Controller
             'nasabah' => $user
         ]);
     }
-
 }
