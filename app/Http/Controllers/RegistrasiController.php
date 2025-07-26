@@ -123,14 +123,28 @@ class RegistrasiController extends Controller
         $rows = $sheet->toArray();
 
         foreach (array_slice($rows, 1) as $row) {
+            // Ambil kolom tanggal
+            $tanggalRaw = $row[5];
+
+            // Deteksi apakah angka (Excel timestamp) atau string biasa
+            if (is_numeric($tanggalRaw)) {
+                $tanggal = Date::excelToDateTimeObject($tanggalRaw)->format('Y-m-d');
+            } else {
+                try {
+                    $tanggal = date('Y-m-d', strtotime($tanggalRaw));
+                } catch (\Exception $e) {
+                    $tanggal = now()->format('Y-m-d'); // fallback ke hari ini
+                }
+            }
+
             Registrasi::create([
                 'nama_lengkap'         => $row[0],
                 'alamat'               => $row[1],
                 'nomer_telepon'        => $row[2],
                 'nomer_induk_nasabah'  => $row[3],
-                'password'             => bcrypt($row[4]), // hash password
-                'tanggal'              => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5])->format('Y-m-d'),
-                'saldo'                => $row[6],
+                'password'             => bcrypt($row[4]),
+                'tanggal'              => $tanggal,
+                'saldo'                => $row[6] ?? 0,
                 'foto'                 => $row[7] ?? null,
             ]);
         }
