@@ -61,6 +61,21 @@
 
         <li class="nav-divider"></li>
 
+        <li class="nav-item">
+          <a href="{{ route('edukasi.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <p>Edukasi</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('pengumuman.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-bullhorn"></i>
+            <p>Pengumuman</p>
+          </a>
+        </li>
+        
+        <li class="nav-divider"></li>
+
         <!-- <li class="nav-item">
           <a href="{{ route('role.index') }}" class="nav-link">
             <i class="nav-icon fas fa-user-shield"></i>
