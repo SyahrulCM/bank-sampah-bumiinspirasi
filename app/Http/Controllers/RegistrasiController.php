@@ -22,7 +22,7 @@ class RegistrasiController extends Controller
             'nama_lengkap' => 'required|string|max:255',
             'alamat' => 'required|string',
             'nomer_telepon' => 'required|string',
-            'nomer_induk_nasabah' => 'required|string|unique:registrasis,nomer_induk_nasabah',
+            'nomer_induk_nasabah' => 'nullable|string|unique:registrasis,nomer_induk_nasabah',
             'tanggal' => 'required|date',
             'password' => 'nullable|string|min:4',
             'foto' => 'nullable|image|max:2048',

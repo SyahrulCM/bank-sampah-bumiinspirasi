@@ -16,6 +16,16 @@
           <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
       @endif
+      @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible">
+          <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+      @endif
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Registrasi Nasabah</h1>
@@ -135,7 +145,10 @@
                       <div class="modal-body">
                         <div class="form-group">
                           <label>Masukkan Nomor Induk Nasabah</label>
-                          <input type="text" name="nomer_induk_nasabah" class="form-control" required>
+                          <input type="text" name="nomer_induk_nasabah" class="form-control @error('nomer_induk_nasabah') is-invalid @enderror" required>
+                          @error('nomer_induk_nasabah')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                          @enderror
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -146,8 +159,8 @@
                   </div>
                 </div>
               </div>
-
               @endforeach
+
               @if($data->isEmpty())
               <tr>
                 <td colspan="5" class="text-center">Belum ada data registrasi.</td>
@@ -161,7 +174,7 @@
   </section>
 </div>
 
-<!-- Modal Registrasi -->
+<!-- Modal Registrasi Baru -->
 <div class="modal fade" id="modal-lg">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -186,8 +199,11 @@
           </div>
           <div class="form-group col-md-6">
             <label>No. Induk Nasabah</label>
-            <input type="text" name="nomer_induk_nasabah" class="form-control">
+            <input type="text" name="nomer_induk_nasabah" class="form-control @error('nomer_induk_nasabah') is-invalid @enderror" value="{{ old('nomer_induk_nasabah') }}">
             <small class="text-muted">Kosongkan jika ingin divalidasi nanti</small>
+            @error('nomer_induk_nasabah')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <div class="form-group col-md-6">
             <label>Tanggal</label>
@@ -200,7 +216,7 @@
           <div class="form-group col-md-6">
             <label>Foto (Upload atau Kamera)</label>
             <input type="file" name="foto" class="form-control" accept="image/*" capture="environment">
-            <small class="text-muted">Bisa pilih file atau langsung ambil dari kamera jika di buka dari Handphone.</small>
+            <small class="text-muted">Bisa pilih file atau langsung ambil dari kamera jika dibuka dari HP.</small>
           </div>
         </div>
         <div class="modal-footer">
