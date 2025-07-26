@@ -13,7 +13,6 @@ class PenarikanController extends Controller
 {
     public function index()
     {
-        // Ambil semua data penarikan + data nasabah
         $penarikans = Penarikan::with('registrasi')->latest()->get();
         $registrasis = Registrasi::all();
 
@@ -39,10 +38,10 @@ class PenarikanController extends Controller
             return redirect()->back()->with('error', 'Penarikan hanya bisa dilakukan setelah melakukan setoran lebih dari satu kali.');
         }
 
-        // Ambil transaksi terakhir
-        $transaksiTerakhir = Transaksi::where('id_registrasi', $registrasiId)->latest()->first();
+        // Ambil data registrasi untuk cek saldo
+        $registrasi = Registrasi::findOrFail($registrasiId);
 
-        if (!$transaksiTerakhir || $transaksiTerakhir->saldo < $request->jumlah) {
+        if ($registrasi->saldo < $request->jumlah) {
             return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk melakukan penarikan.');
         }
 
@@ -66,23 +65,20 @@ class PenarikanController extends Controller
         ]);
 
         $penarikan = Penarikan::with('registrasi')->findOrFail($id_penarikan);
+        $registrasi = $penarikan->registrasi;
 
         if ($request->status === 'disetujui') {
-            $transaksi = Transaksi::where('id_registrasi', $penarikan->id_registrasi)->latest()->first();
-
-            if (!$transaksi || $transaksi->saldo < $penarikan->jumlah) {
+            if ($registrasi->saldo < $penarikan->jumlah) {
                 return redirect()->back()->with('error', 'Saldo tidak mencukupi untuk menyetujui penarikan.');
             }
 
-            // Kurangi saldo nasabah
-            $transaksi->saldo -= $penarikan->jumlah;
-            $transaksi->save();
+            // Kurangi saldo dari tabel registrasi
+            $registrasi->saldo -= $penarikan->jumlah;
+            $registrasi->save();
 
-            // Update status
             $penarikan->status = 'disetujui';
             $penarikan->alasan_ditolak = null;
         } else {
-            // Jika ditolak
             $penarikan->status = 'ditolak';
             $penarikan->alasan_ditolak = $request->alasan_ditolak;
         }
