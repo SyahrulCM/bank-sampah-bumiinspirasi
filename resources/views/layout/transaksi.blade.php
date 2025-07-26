@@ -15,9 +15,9 @@
 </style>
 
 <div class="content-wrapper">
-  <!-- Header -->
-  <div class="content-header">
-    <div class="container-fluid">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="content-header px-0">
       @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           {{ session('success') }}
@@ -26,7 +26,6 @@
           </button>
         </div>
       @endif
-
       @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           {{ session('error') }}
@@ -35,7 +34,6 @@
           </button>
         </div>
       @endif
-
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Transaksi</h1>
@@ -48,11 +46,8 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Content -->
-  <section class="content">
-    <div class="container-fluid">
+    <!-- Content -->
+    <section class="content px-0">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Data Transaksi</h3>
@@ -62,7 +57,6 @@
           <button type="button" class="btn btn-info mb-3" data-toggle="modal" data-target="#modal-transaksi">
             Tambah Transaksi
           </button>
-
           <!-- Tabel -->
           <table id="example1" class="table table-bordered table-striped">
             <thead>
@@ -100,7 +94,6 @@
                 <td>
                   <div class="btn-group" role="group" aria-label="Aksi">
                     <a href="{{ route('transaksi.show', $t->id_transaksi) }}" class="btn btn-sm btn-info">Lihat</a>
-
                     <form action="{{ route('transaksi.hapus', $t->id_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')" style="display:inline;">
                       @csrf
                       <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
@@ -135,8 +128,8 @@
           </form>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>
 
 <!-- Modal Tambah Transaksi -->
@@ -160,7 +153,7 @@
                 @endforeach
               </select>
             </div>
-            <div class="form-group col-md-6"></div>
+            <div class="form-group col-md-6"><!-- Kosong untuk layout --></div>
           </div>
           <div id="form-sampah">
             <div class="form-row mb-2">
