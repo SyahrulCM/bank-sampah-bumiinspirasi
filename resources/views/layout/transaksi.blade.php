@@ -131,7 +131,6 @@
     </section>
   </div>
 </div>
-@endsection
 
 <!-- Modal Tambah Transaksi -->
 <div class="modal fade" id="modal-transaksi">
@@ -184,6 +183,7 @@
     </div>
   </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
