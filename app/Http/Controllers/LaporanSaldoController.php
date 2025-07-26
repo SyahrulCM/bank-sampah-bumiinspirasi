@@ -101,7 +101,7 @@ class LaporanSaldoController extends Controller
 
         // ====== Judul dan Info ======
         $sheet->mergeCells('B1:G1');
-        $sheet->setCellValue('B1', 'LAPORAN KEUANGAN');
+        $sheet->setCellValue('B1', 'LAPORAN KEUANGAN MASUK DAN KELUAR BANK SAMPAH BUMI INSPIRASI');
         $sheet->getStyle('B1')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('B1')->getAlignment()->setHorizontal('center');
 
