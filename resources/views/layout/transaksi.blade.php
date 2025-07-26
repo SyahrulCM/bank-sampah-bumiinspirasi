@@ -1,6 +1,3 @@
-@extends('layout.main')
-
-@section('content')
 <style>
   .select2-container--default .select2-selection--single {
       height: 38px !important;
@@ -14,6 +11,9 @@
   }
 </style>
 
+@extends('layout.main')
+
+@section('content')
 <div class="content-wrapper">
   <div class="container-fluid">
     <!-- Header -->
@@ -131,6 +131,7 @@
     </section>
   </div>
 </div>
+@endsection
 
 <!-- Modal Tambah Transaksi -->
 <div class="modal fade" id="modal-transaksi">
