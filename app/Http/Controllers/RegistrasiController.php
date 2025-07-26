@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Registrasi;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Imports\RegistrasiImport;
 
 class RegistrasiController extends Controller
@@ -117,7 +117,23 @@ class RegistrasiController extends Controller
             'file' => 'required|file|mimes:xls,xlsx',
         ]);
 
-        Excel::import(new RegistrasiImport, $request->file('file'));
+        $file = $request->file('file');
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray();
+
+        foreach (array_slice($rows, 1) as $row) {
+            Registrasi::create([
+                'nama_lengkap'         => $row[0],
+                'alamat'               => $row[1],
+                'nomer_telepon'        => $row[2],
+                'nomer_induk_nasabah'  => $row[3],
+                'password'             => bcrypt($row[4]), // hash password
+                'tanggal'              => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[5])->format('Y-m-d'),
+                'saldo'                => $row[6],
+                'foto'                 => $row[7] ?? null,
+            ]);
+        }
 
         return redirect()->back()->with('sukses', 'Data berhasil diimport!');
     }
