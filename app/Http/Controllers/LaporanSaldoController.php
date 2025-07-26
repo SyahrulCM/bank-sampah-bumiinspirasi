@@ -99,48 +99,70 @@ class LaporanSaldoController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Header
-        $sheet->setCellValue('A1', 'No');
-        $sheet->setCellValue('B1', 'Tanggal');
-        $sheet->setCellValue('C1', 'Aksi');
-        $sheet->setCellValue('D1', 'Nama');
-        $sheet->setCellValue('E1', 'Jumlah (Rp)');
-        $sheet->setCellValue('F1', 'Keterangan');
+        // ====== Judul dan Info ======
+        $sheet->mergeCells('B1:G1');
+        $sheet->setCellValue('B1', 'LAPORAN KEUANGAN');
+        $sheet->getStyle('B1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('B1')->getAlignment()->setHorizontal('center');
 
-        // Isi data
-        $row = 2;
+        $sheet->mergeCells('B2:G2');
+        $sheet->setCellValue('B2', 'Periode: ' . Carbon::parse($from)->format('d M Y') . ' - ' . Carbon::parse($to)->format('d M Y'));
+        $sheet->getStyle('B2')->getAlignment()->setHorizontal('center');
+
+        $sheet->mergeCells('B3:G3');
+        $sheet->setCellValue('B3', 'Tanggal Export: ' . Carbon::now()->format('d M Y H:i'));
+        $sheet->getStyle('B3')->getAlignment()->setHorizontal('center');
+
+        $startRow = 5;
+
+        // ====== Header Tabel (Mulai dari Kolom B) ======
+        $sheet->setCellValue('B' . $startRow, 'No');
+        $sheet->setCellValue('C' . $startRow, 'Tanggal');
+        $sheet->setCellValue('D' . $startRow, 'Aksi');
+        $sheet->setCellValue('E' . $startRow, 'Nama');
+        $sheet->setCellValue('F' . $startRow, 'Jumlah (Rp)');
+        $sheet->setCellValue('G' . $startRow, 'Keterangan');
+
+        $sheet->getStyle('B' . $startRow . ':G' . $startRow)->getFont()->setBold(true);
+
+        // ====== Isi Data ======
+        $row = $startRow + 1;
         $no = 1;
 
         foreach ($sortedData as $item) {
-            $sheet->setCellValue('A' . $row, $no++);
-            $sheet->setCellValue('B' . $row, Carbon::parse($item['tanggal'])->format('d-m-Y'));
-            $sheet->setCellValue('C' . $row, $item['jenis']);
-            $sheet->setCellValue('D' . $row, $item['nama']);
-            $sheet->setCellValue('E' . $row, $item['jumlah']);
-            $sheet->setCellValue('F' . $row, $item['keterangan']);
+            $sheet->setCellValue('B' . $row, $no++);
+            $sheet->setCellValue('C' . $row, Carbon::parse($item['tanggal'])->format('d-m-Y'));
+            $sheet->setCellValue('D' . $row, $item['jenis']);
+            $sheet->setCellValue('E' . $row, $item['nama']);
+            $sheet->setCellValue('F' . $row, $item['jumlah']);
+            $sheet->setCellValue('G' . $row, $item['keterangan']);
             $row++;
         }
 
-        // Baris total
-        $sheet->setCellValue('D' . $row, 'Total Masuk');
-        $sheet->setCellValue('E' . $row, $totalMasuk);
+        // ====== Total ======
+        $sheet->setCellValue('E' . $row, 'Total Masuk');
+        $sheet->setCellValue('F' . $row, $totalMasuk);
         $row++;
 
-        $sheet->setCellValue('D' . $row, 'Total Keluar');
-        $sheet->setCellValue('E' . $row, $totalKeluar);
+        $sheet->setCellValue('E' . $row, 'Total Keluar');
+        $sheet->setCellValue('F' . $row, $totalKeluar);
         $row++;
 
-        $sheet->setCellValue('D' . $row, 'Saldo Akhir');
-        $sheet->setCellValue('E' . $row, $totalSaldo);
+        $sheet->setCellValue('E' . $row, 'Saldo Akhir');
+        $sheet->setCellValue('F' . $row, $totalSaldo);
 
-        // Format angka ke dalam bentuk rupiah
-        for ($i = 2; $i <= $row; $i++) {
-            $val = $sheet->getCell('E' . $i)->getValue();
-            $sheet->setCellValue('E' . $i, 'Rp ' . number_format($val, 0, ',', '.'));
+        // ====== Format Rupiah ======
+        for ($i = $startRow + 1; $i <= $row; $i++) {
+            $val = $sheet->getCell('F' . $i)->getValue();
+            if (is_numeric(str_replace(['Rp', '.', ','], '', $val))) {
+                $sheet->setCellValue('F' . $i, 'Rp ' . number_format($val, 0, ',', '.'));
+            }
         }
 
-        // Tambahkan border ke seluruh tabel
-        $sheet->getStyle('A1:F' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        // ====== Border Tabel ======
+        $sheet->getStyle('B' . $startRow . ':G' . $row)
+            ->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN);
 
         // Simpan dan download
         $filename = 'laporan_saldo_' . now()->format('Ymd_His') . '.xlsx';
