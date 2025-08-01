@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('registrasis', function (Blueprint $table) {
             $table->increments('id_registrasi');
             $table->string('nama_lengkap');
-            $table->text('alamat');
-            $table->string('nomer_telepon');
+            $table->text('alamat')->nullable();
+            $table->string('nomer_telepon')->nullable();
+            $table->string('nomer_rekening')->nullable();
             $table->string('nomer_induk_nasabah')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->date('tanggal');
             $table->bigInteger('saldo')->nullable();
             $table->string('foto')->nullable();

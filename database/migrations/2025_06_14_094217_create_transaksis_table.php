@@ -14,13 +14,8 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->increments('id_transaksi');
             $table->date('tanggal');
-            // $table->unsignedInteger('id_petugas');
-            // $table->foreign('id_petugas')->references('id_petugas')->on('petugas')->onDelete('cascade');
             $table->unsignedInteger('id_registrasi');
             $table->foreign('id_registrasi')->references('id_registrasi')->on('registrasis')->onDelete('cascade');
-            // $table->unsignedInteger('id_sampah');
-            // $table->foreign('id_sampah')->references('id_sampah')->on('sampahs')->onDelete('cascade');
-            // $table->float('berat_sampah');
             $table->integer('saldo');
             $table->timestamps();
         });

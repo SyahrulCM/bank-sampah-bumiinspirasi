@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Registrasi;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Imports\RegistrasiImport;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class RegistrasiController extends Controller
 {
@@ -123,29 +124,16 @@ class RegistrasiController extends Controller
         $rows = $sheet->toArray();
 
         foreach (array_slice($rows, 1) as $row) {
-            // Ambil kolom tanggal
-            $tanggalRaw = $row[5];
-
-            // Deteksi apakah angka (Excel timestamp) atau string biasa
-            if (is_numeric($tanggalRaw)) {
-                $tanggal = Date::excelToDateTimeObject($tanggalRaw)->format('Y-m-d');
-            } else {
-                try {
-                    $tanggal = date('Y-m-d', strtotime($tanggalRaw));
-                } catch (\Exception $e) {
-                    $tanggal = now()->format('Y-m-d'); // fallback ke hari ini
-                }
-            }
-
             Registrasi::create([
-                'nama_lengkap'         => $row[0],
-                'alamat'               => $row[1],
-                'nomer_telepon'        => $row[2],
-                'nomer_induk_nasabah'  => $row[3],
-                'password'             => bcrypt($row[4]),
-                'tanggal'              => $tanggal,
-                'saldo'                => $row[6] ?? 0,
-                'foto'                 => $row[7] ?? null,
+                'nama_lengkap'         => $row[1] ?? null,
+                'alamat'               => null,
+                'nomer_telepon'        => null,
+                'nomer_rekening'       => strval($row[0]) ?? null,
+                'nomer_induk_nasabah'  => null,
+                'password'             => bcrypt('1234'),
+                'tanggal'              => now()->format('Y-m-d'),
+                'saldo'                => $row[2] ?? 0,
+                'foto'                 => null,
             ]);
         }
 
