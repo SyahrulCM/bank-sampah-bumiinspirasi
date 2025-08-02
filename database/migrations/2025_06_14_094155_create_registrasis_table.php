@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('nomer_induk_nasabah')->nullable();
             $table->string('password')->nullable();
             $table->date('tanggal');
-            $table->bigInteger('saldo')->nullable();
+            $table->decimal('saldo', 15, 2)->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
         });
