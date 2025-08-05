@@ -110,7 +110,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
-  // Data dari backend (isi otomatis via controller, contoh dummy di bawah)
   var bulan = @json($chartBulan ?? []);
   var jumlah = @json($chartJumlah ?? []);
   var ctx = document.getElementById('chartTransaksi').getContext('2d');
@@ -130,11 +129,16 @@
       responsive: true,
       plugins: {
         datalabels: {
-          display: false // Tidak tampilkan angka di atas bar
+          display: false
         }
       },
       scales: {
-        y: { beginAtZero: true }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0 // <- hanya angka bulat tanpa koma
+          }
+        }
       }
     },
     plugins: [ChartDataLabels]
@@ -163,7 +167,12 @@
         }
       },
       scales: {
-        y: { beginAtZero: true }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0 // <- hanya angka bulat tanpa koma
+          }
+        }
       }
     },
     plugins: [ChartDataLabels]

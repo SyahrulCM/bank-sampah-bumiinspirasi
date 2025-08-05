@@ -57,6 +57,16 @@
           <button type="button" class="btn btn-info mb-3" data-toggle="modal" data-target="#modal-transaksi">
             Tambah Transaksi
           </button>
+          <!-- Tombol Tambah ke Saldo Nasabah -->
+          @php
+            $penjualanValid = \App\Models\Penjualan::where('hasil_negosiasi', '!=', null)->count() > 0;
+          @endphp
+          <form action="{{ route('transaksi.tambahSaldoNasabah') }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit" class="btn btn-success mb-3" {{ $penjualanValid ? '' : 'disabled' }} onclick="return confirm('Saldo nasabah akan diupdate dari transaksi yang sudah divalidasi penjualan. Lanjutkan?')">
+              Tambah ke Saldo Nasabah
+            </button>
+          </form>
           <!-- Tabel -->
           <table id="example1" class="table table-bordered table-striped">
             <thead>
@@ -149,7 +159,9 @@
               <select name="id_registrasi" id="select-nasabah" class="form-control" required>
                 <option value="">-- Pilih Nasabah --</option>
                 @foreach($nasabah as $n)
-                  <option value="{{ $n->id_registrasi }}">{{ $n->nama_lengkap }}</option>
+                  <option value="{{ $n->id_registrasi }}">
+                      {{ $n->nama_lengkap }} - {{ $n->nomer_induk_nasabah }}
+                  </option>
                 @endforeach
               </select>
             </div>
@@ -159,7 +171,7 @@
             <div class="form-row mb-2">
               <div class="form-group col-md-6">
                 <label>Jenis Sampah</label>
-                <select name="id_sampah[]" class="form-control" required>
+                <select name="id_sampah[]" id="select-jenis-sampah" class="form-control" required>
                   <option value="">-- Pilih Jenis Sampah --</option>
                   @foreach($sampah as $s)
                     <option value="{{ $s->id_sampah }}">{{ $s->jenis_sampah }}</option>
@@ -192,7 +204,7 @@ $(document).ready(function () {
         const row = `
           <div class="form-row mb-2">
             <div class="form-group col-md-6">
-              <select name="id_sampah[]" class="form-control" required>
+              <select name="id_sampah[]" id="select-jenis-sampah" class="form-control" required>
                 <option value="">-- Pilih Jenis Sampah --</option>
                 @foreach($sampah as $s)
                   <option value="{{ $s->id_sampah }}">{{ $s->jenis_sampah }}</option>
@@ -212,7 +224,7 @@ $(document).ready(function () {
 
     // Tombol hapus baris
     $(document).on('click', '.remove-row', function () {
-        $(this).closest('.row').remove();
+        $(this).closest('.form-row').remove();
     });
 });
 </script>
@@ -225,6 +237,19 @@ $(document).ready(function () {
       width: '100%',
       language: {
         searchInputPlaceholder: 'Search nasabah...'
+      }
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('#select-jenis-sampah').select2({
+      placeholder: "-- Pilih Jenis Sampah --",
+      allowClear: true,
+      width: '100%',
+      language: {
+        searchInputPlaceholder: 'Search Jenis Sampah...'
       }
     });
   });

@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sampah;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Imports\RegistrasiImport;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class SampahController extends Controller
 {
     public function sampah()
     {
-        return $this->getSampah(); // redirect ke getSampah langsung
+        return $this->getSampah();
     }
 
     public function getSampah()
@@ -30,17 +33,16 @@ class SampahController extends Controller
             'jenis_sampah' => 'required|string',
             'harga_pengepul' => 'required|integer',
             'harga_ditabung' => 'nullable|integer',
-            'deskripsi' => 'required|string',
-            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'deskripsi' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Simpan foto jika ada
         $fotoPath = null;
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $namaFoto = time() . '_' . $foto->getClientOriginalName();
             $foto->move(public_path('uploads/sampah'), $namaFoto);
-            $fotoPath = 'uploads/sampah/' . $namaFoto; // <-- jangan hanya nama file saja
+            $fotoPath = 'uploads/sampah/' . $namaFoto;
         }
 
         Sampah::create([
@@ -82,7 +84,7 @@ class SampahController extends Controller
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/sampah'), $filename);
-            $update['foto'] = 'uploads/sampah/' . $filename; // <-- gunakan full path relatif
+            $update['foto'] = 'uploads/sampah/' . $filename;
         }
 
         Sampah::where('id_sampah', $id_sampah)->update($update);
@@ -117,6 +119,48 @@ class SampahController extends Controller
             'message' => 'Data sampah berhasil diambil',
             'data' => $data
         ]);
+    }
+
+    public function importSampah(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xls,xlsx',
+        ]);
+
+        $file = $request->file('file');
+        $spreadsheet = IOFactory::load($file->getPathname());
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray();
+
+        foreach (array_slice($rows, 1) as $row) {
+            $jenisSampah = $row[0] ?? null;
+            $hargaPengepul = is_numeric($row[1]) ? floatval($row[1]) : 0;
+            $hargaDitabung = $hargaPengepul * 0.8;
+            $deskripsi = $row[3] ?? null;
+            $foto = isset($row[4]) ? 'uploads/sampah/' . $row[4] : null;
+
+            if (!$jenisSampah) continue;
+
+            $sampah = Sampah::where('jenis_sampah', $jenisSampah)->first();
+            if ($sampah) {
+                $sampah->update([
+                    'harga_pengepul' => $hargaPengepul,
+                    'harga_ditabung' => $hargaDitabung,
+                    'deskripsi'      => $deskripsi,
+                    'foto'           => $foto,
+                ]);
+            } else {
+                Sampah::create([
+                    'jenis_sampah'   => $jenisSampah,
+                    'harga_pengepul' => $hargaPengepul,
+                    'harga_ditabung' => $hargaDitabung,
+                    'deskripsi'      => $deskripsi,
+                    'foto'           => $foto,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('sukses', 'Data berhasil diimport!');
     }
 
 }

@@ -4,44 +4,60 @@
 <div class="content-wrapper">
   <div class="content-header">
     <div class="container-fluid">
-      <h1 class="m-0">Detail Penjualan</h1>
-      <a href="{{ route('penjualans.index') }}" class="btn btn-secondary mb-3">← Kembali</a>
-    </div>
-  </div>
-
-  <section class="content">
-    <div class="container-fluid">
-      <div class="card">
-        <div class="card-body">
-          <h5><strong>Nama Pengepul:</strong> {{ $penjualan->pengepul->nama_pengepul }}</h5>
-          <h5><strong>Tanggal:</strong> {{ $penjualan->tanggal }}</h5>
-          <h5><strong>Total Harga:</strong> Rp {{ number_format($penjualan->total_harga, 0, ',', '.') }}</h5>
-          
-          <hr>
-          <h5>Rincian Sampah</h5>
-          <table class="table table-bordered">
-            <thead>
+        <div class="card">
+          <div class="card-header">
+            <h3>Detail Penjualan</h3>
+          </div>
+          <div class="card-body">
+            <table class="table table-bordered">
               <tr>
-                <th>No</th>
-                <th>Jenis Sampah</th>
-                <th>Berat (kg)</th>
-                <th>Subtotal</th>
+                <th>Pengepul</th>
+                <td>{{ $penjualan->pengepul->nama_pengepul }}</td>
               </tr>
-            </thead>
-            <tbody>
-              @foreach($penjualan->detailPenjualan as $detail)
               <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $detail->sampah->jenis_sampah }}</td>
-                <td>{{ $detail->berat_kg }}</td>
-                <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                <th>Tanggal</th>
+                <td>{{ $penjualan->tanggal }}</td>
               </tr>
-              @endforeach
-            </tbody>
-          </table>
+              <tr>
+                <th>Total Harga Otomatis</th>
+                <td>Rp {{ number_format($penjualan->total_harga, 0, ',', '.') }}</td>
+              </tr>
+              <tr>
+                <th>Hasil Negosiasi</th>
+                <td>
+                  @if($penjualan->hasil_negosiasi)
+                    Rp {{ number_format($penjualan->hasil_negosiasi, 0, ',', '.') }}
+                  @else
+                    <span class="text-muted">Belum divalidasi</span>
+                  @endif
+                </td>
+              </tr>
+            </table>
+            <hr>
+            <h5>Detail Barang</h5>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Jenis Sampah</th>
+                  <th>Berat (Kg)</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($penjualan->detailPenjualan as $d)
+                <tr>
+                  <td>{{ $d->sampah->jenis_sampah }}</td>
+                  <td>{{ $d->berat_kg }}</td>
+                  <td>Rp {{ number_format($d->subtotal, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+          </section>
         </div>
       </div>
     </div>
-  </section>
-</div>
+  </div>
 @endsection

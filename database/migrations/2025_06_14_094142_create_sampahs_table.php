@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('sampahs', function (Blueprint $table) {
             $table->increments('id_sampah');
-            $table->string('jenis_sampah');
-            $table->integer('harga_pengepul');
-            $table->integer('harga_ditabung');
-            $table->text('deskripsi');
-            $table->string('foto');
+            $table->string('jenis_sampah')->unique();
+            $table->integer('harga_pengepul')->default(0);
+            $table->integer('harga_ditabung')->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

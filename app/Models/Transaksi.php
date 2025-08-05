@@ -31,6 +31,18 @@ class Transaksi extends Model
 
     public function nasabah()
     {
-        return $this->belongsTo(\App\Models\Registrasi::class, 'id_registrasi');
+        return $this->belongsTo(Registrasi::class, 'id_registrasi');
     }
+
+    public function registrasi()
+    {
+        return $this->belongsTo(Registrasi::class, 'id_registrasi', 'id_registrasi');
+    }
+
+    public function sampah()
+    {
+        return $this->belongsTo(Sampah::class, 'id_sampah');
+    }
+
+
 }

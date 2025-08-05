@@ -141,13 +141,7 @@ class TransaksiController extends Controller
                 }
             }
 
-            // Kurangi saldo nasabah
-            $nasabah = Registrasi::find($transaksi->id_registrasi);
-            if ($nasabah) {
-                $nasabah->saldo -= $transaksi->saldo;
-                if ($nasabah->saldo < 0) $nasabah->saldo = 0;
-                $nasabah->save();
-            }
+            // Tidak mengurangi saldo nasabah
 
             // Hapus detail dan transaksi
             DetailTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();

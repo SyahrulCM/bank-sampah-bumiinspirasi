@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->text('alamat')->nullable();
             $table->string('nomer_telepon')->nullable();
-            $table->string('nomer_rekening')->nullable();
             $table->string('nomer_induk_nasabah')->nullable();
             $table->string('password')->nullable();
             $table->date('tanggal');

@@ -46,7 +46,8 @@
                 <th>No</th>
                 <th>Nama Pengepul</th>
                 <th>Tanggal</th>
-                <th>Total Harga</th>
+                <th>Total Harga Otomatis</th>
+                <th>Hasil Negosiasi</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -58,9 +59,19 @@
                 <td>{{ $p->tanggal }}</td>
                 <td>Rp {{ number_format($p->total_harga, 0, ',', '.') }}</td>
                 <td>
+                  @if($p->hasil_negosiasi)
+                    Rp {{ number_format($p->hasil_negosiasi, 0, ',', '.') }}
+                  @else
+                    <span class="text-muted">Belum divalidasi</span>
+                  @endif
+                </td>
+                <td>
                   <div class="btn-group" role="group" aria-label="Aksi">
                     <a href="{{ route('penjualans.detail', $p->id_penjualan) }}" class="btn btn-sm btn-primary">Detail</a>
                     <a href="{{ route('penjualans.hapus', $p->id_penjualan) }}" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</a>
+                    @if(!$p->hasil_negosiasi)
+                      <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalValidasiHarga{{ $p->id_penjualan }}">Validasi Harga</button>
+                    @endif
                   </div>
                 </td>
               </tr>
@@ -144,6 +155,34 @@
     </form>
   </div>
 </div>
+
+@foreach($penjualans as $p)
+  @if(!$p->hasil_negosiasi)
+  <div class="modal fade" id="modalValidasiHarga{{ $p->id_penjualan }}" tabindex="-1">
+    <div class="modal-dialog">
+      <form method="POST" action="{{ route('penjualans.validasiHarga', $p->id_penjualan) }}">
+        @csrf
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Validasi Harga Negosiasi</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Hasil Negosiasi (Rp)</label>
+              <input type="number" name="hasil_negosiasi" class="form-control" min="0" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Simpan</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  @endif
+@endforeach
 
 
 <script>

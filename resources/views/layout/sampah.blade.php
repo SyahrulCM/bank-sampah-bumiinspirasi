@@ -48,6 +48,23 @@
 
   <section class="content">
     <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-info text-white">
+          <h3 class="card-title">Import Data Sampah dari Excel</h3>
+        </div>
+        <form action="{{ route('sampah.import') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="card-body row align-items-end">
+            <div class="form-group col-md-8 mb-0">
+              <label>Pilih File Excel (.xlsx atau .xls)</label>
+              <input type="file" name="file" class="form-control-file" accept=".xlsx,.xls" required>
+            </div>
+            <div class="form-group col-md-4 mb-0 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary mr-2"><i class="fas fa-file-import"></i> Import </button>
+            </div>
+          </div>
+        </form>
+      </div>
       <div class="row">
         <div class="col-12">
           <div class="card">
@@ -138,7 +155,7 @@
           <div class="form-group">
             <label>Foto</label>
             <div class="custom-file">
-              <input type="file" name="foto" class="custom-file-input" id="foto" required>
+              <input type="file" name="foto" class="custom-file-input" id="foto">
               <label class="custom-file-label" for="foto">Pilih file foto</label>
             </div>
           </div>

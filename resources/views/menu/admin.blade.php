@@ -69,7 +69,7 @@
         <li class="nav-item">
           <a href="{{ route('laporan.saldo') }}" class="nav-link">
             <i class="nav-icon fas fa-wallet"></i>
-            <p>Laporan Saldo</p>
+            <p>Laporan</p>
           </a>
         </li>
 

@@ -8,7 +8,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Laporan Saldo (Masuk & Keluar)</h1>
+          <h1 class="m-0">Laporan</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -77,7 +77,7 @@
           <!-- Card baru untuk export manual -->
           <div class="card mt-3">
             <div class="card-header">
-              <h3 class="card-title">Export Manual Excel</h3>
+              <h3 class="card-title">Export Laporan Saldo</h3>
             </div>
             <div class="card-body">
               <form action="{{ route('laporan-saldo.export-manual') }}" method="GET" class="row align-items-end">
@@ -93,6 +93,61 @@
                   <button type="submit" class="btn btn-success">
                     <i class="fas fa-file-excel"></i> Export Manual Excel
                   </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-header">
+              <h3 class="card-title">Export Laporan Transaksi</h3>
+            </div>
+            <div class="card-body">
+              <form action="{{ route('laporan-transaksi.export-manual') }}" method="GET" class="row align-items-end">
+                <div class="col-md-4">
+                  <label>Dari Tanggal</label>
+                  <input type="date" name="from" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label>Sampai Tanggal</label>
+                  <input type="date" name="to" class="form-control" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                  <button type="submit" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Export Manual Excel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+           <!-- Card Export Laporan Mutasi -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h3 class="card-title">Export Laporan Stok Masuk dan Keluar</h3>
+            </div>
+            <div class="card-body">
+              <form method="GET" action="{{ route('mutasi.exportManual') }}">
+                <div class="form-row align-items-end">
+                  <div class="form-group mb-0 mr-2">
+                    <label>Dari Tanggal:</label>
+                    <input type="date" name="from" class="form-control" required>
+                  </div>
+                  <div class="form-group mb-0 mr-2">
+                    <label>Sampai Tanggal:</label>
+                    <input type="date" name="to" class="form-control" required>
+                  </div>
+                  <div class="form-group mb-0 mr-2">
+                    <label>Aksi:</label>
+                    <select name="aksi" class="form-control">
+                      <option value="Semua">Semua</option>
+                      <option value="Masuk">Masuk</option>
+                      <option value="Keluar">Keluar</option>
+                    </select>
+                  </div>
+                  <div class="form-group mb-0">
+                    <button type="submit" class="btn btn-success">Download Excel</button>
+                  </div>
                 </div>
               </form>
             </div>

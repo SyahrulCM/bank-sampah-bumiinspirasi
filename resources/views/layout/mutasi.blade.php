@@ -80,6 +80,38 @@
         </div>
       </div>
 
+      <!-- Card Export Laporan Mutasi -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h3 class="card-title">Export Laporan Mutasi</h3>
+        </div>
+        <div class="card-body">
+          <form method="GET" action="{{ route('mutasi.exportManual') }}">
+            <div class="form-row align-items-end">
+              <div class="form-group mb-0 mr-2">
+                <label>Dari Tanggal:</label>
+                <input type="date" name="from" class="form-control" required>
+              </div>
+              <div class="form-group mb-0 mr-2">
+                <label>Sampai Tanggal:</label>
+                <input type="date" name="to" class="form-control" required>
+              </div>
+              <div class="form-group mb-0 mr-2">
+                <label>Aksi:</label>
+                <select name="aksi" class="form-control">
+                  <option value="Semua">Semua</option>
+                  <option value="Masuk">Masuk</option>
+                  <option value="Keluar">Keluar</option>
+                </select>
+              </div>
+              <div class="form-group mb-0">
+                <button type="submit" class="btn btn-success">Download Excel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </div>
   </section>
 </div>

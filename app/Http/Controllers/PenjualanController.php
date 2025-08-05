@@ -115,4 +115,15 @@ class PenjualanController extends Controller
 
         return redirect()->route('penjualans.index')->with('success', 'Data penjualan berhasil dihapus.');
     }
+
+    public function validasiHarga(Request $request, $id)
+    {
+        $request->validate([
+            'hasil_negosiasi' => 'required|integer|min:0',
+        ]);
+        $penjualan = Penjualan::findOrFail($id);
+        $penjualan->hasil_negosiasi = $request->hasil_negosiasi;
+        $penjualan->save();
+        return redirect()->back()->with('success', 'Harga negosiasi berhasil divalidasi.');
+    }
 }

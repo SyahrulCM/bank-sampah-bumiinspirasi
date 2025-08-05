@@ -55,6 +55,7 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::get('/sampah/edit/{id_sampah}', [SampahController::class, 'editSampah'])->name('sampah.edit');
     Route::post('/sampah/update/{id_sampah}', [SampahController::class, 'updateSampah'])->name('sampah.update');
     Route::get('/sampah/hapus/{id_sampah}', [SampahController::class, 'hapusSampah'])->name('sampah.hapus');
+    Route::post('/sampah/import', [SampahController::class, 'importSampah'])->name('sampah.import');
 
     Route::get('/role',[RoleController::class,'role']);
     Route::get('/role', [RoleController::class, 'getRole'])->name('role.index');
@@ -81,6 +82,7 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::get('/transaksi/{id_transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::post('/transaksi/simpan', [TransaksiController::class, 'simpanTransaksi'])->name('transaksi.simpan');
     Route::post('/transaksi/hapus/{id}', [TransaksiController::class, 'hapusTransaksi'])->name('transaksi.hapus');
+    Route::post('/transaksi/tambah-saldo-nasabah', [TransaksiController::class, 'tambahSaldoNasabah'])->name('transaksi.tambahSaldoNasabah');
 
     Route::get('/stok', [StokController::class, 'index'])->name('stok.index');
 
@@ -94,14 +96,18 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::post('/penjualan/simpan', [PenjualanController::class, 'simpan'])->name('penjualans.simpan');
     Route::get('/penjualan/{id}/detail', [PenjualanController::class, 'detail'])->name('penjualans.detail');
     Route::get('/penjualan/{id}/hapus', [PenjualanController::class, 'hapus'])->name('penjualans.hapus');
+    Route::post('/penjualan/{id}/validasi-harga', [PenjualanController::class, 'validasiHarga'])->name('penjualans.validasiHarga');
+    
 
     Route::get('/mutasi', [MutasiController::class, 'index'])->name('mutasi.index');
     Route::post('/mutasi/store', [MutasiController::class, 'store'])->name('mutasi.store');
     Route::delete('/mutasi/{id}', [MutasiController::class, 'destroy'])->name('mutasi.destroy');
+    Route::get('/mutasi/export-manual', [MutasiController::class, 'exportLaporan'])->name('mutasi.exportManual');
     Route::get('/stok/sampah/{id}', function ($id) {
     $stok = \App\Models\Stok::where('id_sampah', $id)->first();
     return response()->json(['jumlah' => $stok->jumlah ?? 0]);
     });
+    
 
     Route::get('/penarikan', [PenarikanController::class, 'index'])->name('penarikan.index');
     Route::post('/penarikan/simpan', [PenarikanController::class, 'store'])->name('penarikan.store');
@@ -111,6 +117,8 @@ Route::middleware(['cekLogin'])->group(function () {
 
     Route::get('/laporan/saldo', [LaporanSaldoController::class, 'index'])->name('laporan.saldo');
     Route::get('/laporan-saldo/export-manual', [LaporanSaldoController::class, 'exportManualExcel'])->name('laporan-saldo.export-manual');
+    Route::get('/laporan-transaksi/export-manual', [LaporanSaldoController::class, 'exportTransaksiExcel'])->name('laporan-transaksi.export-manual');
+    Route::get('/laporan-stok/export-manual', [LaporanSaldoController::class, 'exportStokExcel'])->name('laporan-stok.export-manual');
 
 
     Route::get('/edukasi', [EdukasiController::class, 'index'])->name('edukasi.index');
