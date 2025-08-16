@@ -1,4 +1,16 @@
 ---
 deployment:
   tasks:
-    - echo "Hello from cPanel deploy"
+    # 1. Set direktori kerja ke folder project
+    - export DEPLOYPATH=/home/bsbs8657/public_html
+
+    # 2. Copy semua file Laravel ke public_html
+    - /bin/cp -R banksampah/* $DEPLOYPATH
+
+    # 3. Install dependency PHP (composer)
+    - /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader
+
+    # 4. Buat cache config, route, dan view (opsional)
+    - /usr/local/bin/php artisan config:cache
+    - /usr/local/bin/php artisan route:cache
+    - /usr/local/bin/php artisan view:cache
