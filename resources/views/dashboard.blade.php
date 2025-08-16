@@ -79,6 +79,42 @@
             </div>
         </div>
       </div>
+      <!-- Leaderboard Saldo Nasabah -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="card-title mb-0">Leaderboard Saldo Nasabah Terbanyak</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                  <thead class="bg-light">
+                    <tr>
+                      <th style="width:40px">#</th>
+                      <th>Nama Nasabah</th>
+                      <th class="text-right">Saldo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @forelse($topNasabah as $i => $nasabah)
+                      <tr>
+                        <td>{{ $i+1 }}</td>
+                        <td>{{ $nasabah->nama_lengkap ?? '-' }}</td>
+                        <td class="text-right">{{ number_format($nasabah->saldo, 0, ',', '.') }}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="3" class="text-center">Tidak ada data</td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row mt-4">
         <div class="col-12">
           <div class="card">

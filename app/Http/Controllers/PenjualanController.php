@@ -45,7 +45,8 @@ class PenjualanController extends Controller
                 $berat = $request->berat[$index];
                 $sampah = Sampah::findOrFail($id_sampah);
 
-                if ($sampah->stok < $berat) {
+                $stok = Stok::where('id_sampah', $id_sampah)->first();
+                if (!$stok || $stok->jumlah < $berat) {
                     throw new \Exception("Stok tidak mencukupi untuk jenis sampah: {$sampah->jenis_sampah}");
                 }
 
@@ -60,7 +61,6 @@ class PenjualanController extends Controller
 
             foreach ($request->id_sampah as $i => $idSampah) {
                 $berat = $request->berat[$i];
-
                 $sampah = Sampah::findOrFail($idSampah);
                 $stok = Stok::where('id_sampah', $idSampah)->first();
 
@@ -70,8 +70,9 @@ class PenjualanController extends Controller
 
                 $subtotal = $sampah->harga_pengepul * $berat;
 
-                $stok->jumlah -= $berat;
-                $stok->save();
+                // Tidak ada perubahan stok di sini
+                // $stok->jumlah -= $berat;
+                // $stok->save();
 
                 DetailPenjualan::create([
                     'id_penjualan' => $penjualan->id_penjualan,
@@ -83,7 +84,6 @@ class PenjualanController extends Controller
                 $pengepul = Pengepul::find($request->id_pengepul);
                 $namaPengepul = $pengepul ? $pengepul->nama_pengepul : 'Tanpa Nama';
 
-                // ⬇️ Catat mutasi: KELUAR
                 Mutasi::create([
                     'tanggal' => $request->tanggal,
                     'id_sampah' => $idSampah,
@@ -125,5 +125,13 @@ class PenjualanController extends Controller
         $penjualan->hasil_negosiasi = $request->hasil_negosiasi;
         $penjualan->save();
         return redirect()->back()->with('success', 'Harga negosiasi berhasil divalidasi.');
+    }
+
+    public function invoice($id)
+    {
+        $penjualan = Penjualan::with(['pengepul', 'detailPenjualan.sampah'])->findOrFail($id);
+
+        $pdf = \PDF::loadView('layout.pdf_penjualan', compact('penjualan'));
+        return $pdf->stream('Invoice_Penjualan_'.$penjualan->id_penjualan.'.pdf');
     }
 }

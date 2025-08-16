@@ -97,6 +97,8 @@ Route::middleware(['cekLogin'])->group(function () {
     Route::get('/penjualan/{id}/detail', [PenjualanController::class, 'detail'])->name('penjualans.detail');
     Route::get('/penjualan/{id}/hapus', [PenjualanController::class, 'hapus'])->name('penjualans.hapus');
     Route::post('/penjualan/{id}/validasi-harga', [PenjualanController::class, 'validasiHarga'])->name('penjualans.validasiHarga');
+    Route::get('/penjualan/{id}/invoice', [PenjualanController::class, 'invoice'])->name('penjualans.invoice');
+
     
 
     Route::get('/mutasi', [MutasiController::class, 'index'])->name('mutasi.index');

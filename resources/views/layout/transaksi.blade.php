@@ -57,16 +57,6 @@
           <button type="button" class="btn btn-info mb-3" data-toggle="modal" data-target="#modal-transaksi">
             Tambah Transaksi
           </button>
-          <!-- Tombol Tambah ke Saldo Nasabah -->
-          @php
-            $penjualanValid = \App\Models\Penjualan::where('hasil_negosiasi', '!=', null)->count() > 0;
-          @endphp
-          <form action="{{ route('transaksi.tambahSaldoNasabah') }}" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit" class="btn btn-success mb-3" {{ $penjualanValid ? '' : 'disabled' }} onclick="return confirm('Saldo nasabah akan diupdate dari transaksi yang sudah divalidasi penjualan. Lanjutkan?')">
-              Tambah ke Saldo Nasabah
-            </button>
-          </form>
           <!-- Tabel -->
           <table id="example1" class="table table-bordered table-striped">
             <thead>

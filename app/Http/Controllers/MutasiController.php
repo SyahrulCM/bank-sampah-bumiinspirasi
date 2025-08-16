@@ -34,7 +34,14 @@ class MutasiController extends Controller
         if ($request->aksi && $request->aksi != 'Semua') {
             $query->where('aksi', $request->aksi);
         }
-        $mutasis = $query->orderBy('tanggal', 'desc')->get();
+
+        // Gabungkan total berat per jenis sampah dan aksi
+        $mutasiGabung = $query
+            ->select('id_sampah', 'aksi', DB::raw('SUM(berat) as total_berat'))
+            ->groupBy('id_sampah', 'aksi')
+            ->get();
+
+        $sampahMap = \App\Models\Sampah::pluck('jenis_sampah', 'id_sampah');
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -51,62 +58,56 @@ class MutasiController extends Controller
         $sheet->setCellValue('E2', date('d-m-Y H:i:s'));
 
         // Header kolom data
-        $sheet->setCellValue('A4', 'Tanggal');
-        $sheet->setCellValue('B4', 'Jenis Sampah');
-        $sheet->setCellValue('C4', 'Aksi');
-        $sheet->setCellValue('D4', 'Berat (kg)');
-        $sheet->setCellValue('E4', 'Keterangan');
-        $sheet->getStyle('A4:E4')->getFont()->setBold(true);
+        $sheet->setCellValue('A4', 'Jenis Sampah');
+        $sheet->setCellValue('B4', 'Aksi');
+        $sheet->setCellValue('C4', 'Total Berat (kg)');
+        $sheet->getStyle('A4:C4')->getFont()->setBold(true);
 
         $rowNum = 5;
         $totalBerat = 0;
-        foreach ($mutasis as $m) {
-            $sheet->setCellValue('A' . $rowNum, $m->tanggal);
-            $sheet->setCellValue('B' . $rowNum, $m->sampah->jenis_sampah ?? '-');
-            $sheet->setCellValue('C' . $rowNum, $m->aksi);
-            $sheet->setCellValue('D' . $rowNum, $m->berat);
-            $sheet->setCellValue('E' . $rowNum, $m->keterangan);
-            $totalBerat += $m->berat;
-            $rowNum++;
+        foreach ($mutasiGabung as $m) {
+            // Hanya isi baris jika total_berat > 0
+            if ($m->total_berat > 0) {
+                $sheet->setCellValue('A' . $rowNum, $sampahMap[$m->id_sampah] ?? '-');
+                $sheet->setCellValue('B' . $rowNum, $m->aksi);
+                $sheet->setCellValue('C' . $rowNum, $m->total_berat);
+                $totalBerat += $m->total_berat;
+                $rowNum++;
+            }
         }
 
         // Total berat keseluruhan
-        $sheet->setCellValue('C' . $rowNum, 'Total Berat');
-        $sheet->setCellValue('D' . $rowNum, $totalBerat);
+        if ($totalBerat > 0) {
+            $sheet->setCellValue('A' . $rowNum, 'Total Semua');
+            $sheet->setCellValue('B' . $rowNum, '');
+            $sheet->setCellValue('C' . $rowNum, $totalBerat);
+        }
 
         // Styling header utama
-        $sheet->getStyle('A1:E1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A1:E1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A1:E1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1:C1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:C1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getRowDimension(1)->setRowHeight(30);
-        $sheet->getStyle('A4:E4')->getFont()->setBold(true);
-        $sheet->getStyle('A4:E4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DDEBF7');
-        $sheet->getStyle('A4:E4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A4:E4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A4:C4')->getFont()->setBold(true);
+        $sheet->getStyle('A4:C4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DDEBF7');
+        $sheet->getStyle('A4:C4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A4:C4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
         // Styling border dan kolom
         $lastDataRow = $rowNum - 1;
-        $borderRange = 'A4:E' . $lastDataRow;
+        $borderRange = 'A4:C' . $lastDataRow;
         $sheet->getStyle($borderRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         $sheet->getStyle($borderRange)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle($borderRange)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(22);
-        $sheet->getColumnDimension('C')->setWidth(10);
-        $sheet->getColumnDimension('D')->setWidth(14);
-        $sheet->getColumnDimension('E')->setWidth(35);
-
-        // Styling total berat
-        $sheet->getStyle('C' . $rowNum . ':D' . $rowNum)->getFont()->setBold(true);
-        $sheet->getStyle('C' . $rowNum . ':D' . $rowNum)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FCE4D6');
+        $sheet->getColumnDimension('A')->setWidth(22);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(18);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $filename = 'Laporan_Mutasi_' . date('Ymd_His') . '.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $filename);
         $writer->save($temp_file);
 
-        // ...existing code...
-        // Styling setelah data selesai diisi
         $sheet->getStyle('A1:E1')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A1:E1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A1:E1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
@@ -116,21 +117,16 @@ class MutasiController extends Controller
         $sheet->getStyle('A4:E4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('A4:E4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
-        // Styling border dan kolom
         $lastDataRow = $rowNum - 1;
-        $borderRange = 'A4:E' . $lastDataRow;
+        $borderRange = 'A4:B' . $lastDataRow;
         $sheet->getStyle($borderRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         $sheet->getStyle($borderRange)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle($borderRange)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(22);
-        $sheet->getColumnDimension('C')->setWidth(10);
-        $sheet->getColumnDimension('D')->setWidth(14);
-        $sheet->getColumnDimension('E')->setWidth(35);
+        $sheet->getColumnDimension('A')->setWidth(22);
+        $sheet->getColumnDimension('B')->setWidth(18);
 
-        // Styling total berat
-        $sheet->getStyle('C' . $rowNum . ':D' . $rowNum)->getFont()->setBold(true);
-        $sheet->getStyle('C' . $rowNum . ':D' . $rowNum)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FCE4D6');
+        $sheet->getStyle('A' . $rowNum . ':C' . $rowNum)->getFont()->setBold(true);
+        $sheet->getStyle('A' . $rowNum . ':C' . $rowNum)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FCE4D6');
 
         return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
     }

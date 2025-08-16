@@ -37,6 +37,12 @@ class DashboardController extends Controller
             $chartJumlah[] = $d->jumlah;
         }
 
+        // Leaderboard saldo nasabah terbanyak (top 10)
+        $topNasabah = Registrasi::orderByDesc('saldo')
+            ->select('nama_lengkap', 'saldo')
+            ->limit(10)
+            ->get();
+
         // Grafik penjualan per bulan
         $dataPenjualan = Penjualan::select(
             DB::raw('MONTH(tanggal) as bulan'),
@@ -59,7 +65,8 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'jumlahRegistrasi', 'jumlahTransaksi', 'jumlahSampah',
             'chartBulan', 'chartJumlah',
-            'chartBulanPenjualan', 'chartJumlahPenjualan','jumlahPenjualan'
+            'chartBulanPenjualan', 'chartJumlahPenjualan', 'jumlahPenjualan',
+            'topNasabah'
         ));
     }
 }

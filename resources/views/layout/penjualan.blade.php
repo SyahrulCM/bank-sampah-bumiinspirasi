@@ -46,7 +46,7 @@
                 <th>No</th>
                 <th>Nama Pengepul</th>
                 <th>Tanggal</th>
-                <th>Total Harga Otomatis</th>
+                <th>Total Harga</th>
                 <th>Hasil Negosiasi</th>
                 <th>Aksi</th>
               </tr>
@@ -69,6 +69,7 @@
                   <div class="btn-group" role="group" aria-label="Aksi">
                     <a href="{{ route('penjualans.detail', $p->id_penjualan) }}" class="btn btn-sm btn-primary">Detail</a>
                     <a href="{{ route('penjualans.hapus', $p->id_penjualan) }}" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</a>
+                    <a href="{{ route('penjualans.invoice', $p->id_penjualan) }}" target="_blank" class="btn btn-sm btn-success">Cetak</a>
                     @if(!$p->hasil_negosiasi)
                       <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalValidasiHarga{{ $p->id_penjualan }}">Validasi Harga</button>
                     @endif

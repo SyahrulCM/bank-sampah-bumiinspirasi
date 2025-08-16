@@ -19,7 +19,7 @@
                 <td>{{ $penjualan->tanggal }}</td>
               </tr>
               <tr>
-                <th>Total Harga Otomatis</th>
+                <th>Total Harga</th>
                 <td>Rp {{ number_format($penjualan->total_harga, 0, ',', '.') }}</td>
               </tr>
               <tr>
