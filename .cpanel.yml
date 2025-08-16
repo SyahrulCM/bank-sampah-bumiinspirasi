@@ -1,18 +1,5 @@
 ---
 deployment:
   tasks:
-    # Lokasi project Laravel di server (bukan public_html)
-    - export APPDIR=/home/bsbs8657/laravel_project
     - export DEPLOYPATH=/home/bsbs8657/public_html
-
-    # Buat folder project kalau belum ada
-    - mkdir -p $APPDIR
-
-    # Sync semua file project ke folder laravel_project
-    - /bin/rsync -a . $APPDIR
-
-    # Hapus isi public_html lama
-    - /bin/rm -rf $DEPLOYPATH/*
-
-    # Copy isi folder public Laravel ke public_html (biar bisa diakses via domain)
-    - /bin/cp -R $APPDIR/public/* $DEPLOYPATH
+    - /bin/rsync -av --exclude='.git' --exclude='.cpanel.yml' ./ $DEPLOYPATH
