@@ -1,3 +1,9 @@
+@php
+  $tgl = \Carbon\Carbon::parse($penjualan->tanggal)->format('Ymd');
+  $urut = str_pad(($penjualan->id_penjualan ?? 1), 3, '0', STR_PAD_LEFT);
+  $kodeInvoice = 'PJL' . $tgl . $urut;
+@endphp
+
 @extends('layout.main')
 
 @section('content')
@@ -10,6 +16,10 @@
           </div>
           <div class="card-body">
             <table class="table table-bordered">
+              <tr>
+                <th>Kode Invoice</th>
+                <td><span class="badge bg-success">{{ $kodeInvoice }}</span></td>
+              </tr>
               <tr>
                 <th>Pengepul</th>
                 <td>{{ $penjualan->pengepul->nama_pengepul }}</td>
