@@ -194,13 +194,14 @@ $(document).ready(function () {
         const row = `
           <div class="form-row mb-2">
             <div class="form-group col-md-6">
-              <select name="id_sampah[]" id="select-jenis-sampah" class="form-control" required>
-                <option value="">-- Pilih Jenis Sampah --</option>
-                @foreach($sampah as $s)
-                  <option value="{{ $s->id_sampah }}">{{ $s->jenis_sampah }}</option>
-                @endforeach
-              </select>
-            </div>
+                <label>Jenis Sampah</label>
+                <select name="id_sampah[]" id="select-jenis-sampah" class="form-control" required>
+                  <option value="">-- Pilih Jenis Sampah --</option>
+                  @foreach($sampah as $s)
+                    <option value="{{ $s->id_sampah }}">{{ $s->jenis_sampah }}</option>
+                  @endforeach
+                </select>
+              </div>
             <div class="form-group col-md-4">
               <input type="text" name="berat_sampah[]" class="form-control" placeholder="Berat (boleh koma)" required>
             </div>
