@@ -30,11 +30,24 @@ class RegistrasiController extends Controller
         ]);
 
         $fotoPath = null;
+        // if ($request->hasFile('foto')) {
+        //     $file = $request->file('foto');
+        //     $filename = time() . '_' . $file->getClientOriginalName();
+        //     $file->move(public_path('foto_nasabah'), $filename);
+        //     $fotoPath = 'foto_nasabah/' . $filename;
+        // }
         if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('foto_nasabah'), $filename);
-            $fotoPath = 'foto_nasabah/' . $filename;
+            $foto = $request->file('foto');
+            $namaFoto = time() . '_' . $foto->getClientOriginalName();
+
+            // Gunakan path absolut menuju public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/foto_nasabah';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true); // buat folder jika belum ada
+            }
+
+            $foto->move($uploadPath, $namaFoto);
+            $fotoPath = 'uploads/foto_nasabah/' . $namaFoto;
         }
 
         $registrasi = new Registrasi();
@@ -86,15 +99,28 @@ class RegistrasiController extends Controller
             'foto' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('foto')) {
-            if ($registrasi->foto && file_exists(public_path($registrasi->foto))) {
-                unlink(public_path($registrasi->foto));
-            }
+        // if ($request->hasFile('foto')) {
+        //     if ($registrasi->foto && file_exists(public_path($registrasi->foto))) {
+        //         unlink(public_path($registrasi->foto));
+        //     }
 
+        //     $file = $request->file('foto');
+        //     $filename = time() . '_' . $file->getClientOriginalName();
+        //     $file->move(public_path('foto_nasabah'), $filename);
+        //     $registrasi->foto = 'foto_nasabah/' . $filename;
+        // }
+        if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('foto_nasabah'), $filename);
-            $registrasi->foto = 'foto_nasabah/' . $filename;
+
+            // Path absolut ke public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/foto_nasabah';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $file->move($uploadPath, $filename);
+            $update['foto'] = 'uploads/foto_nasabah/' . $filename;
         }
 
         $registrasi->nama_lengkap = $request->nama_lengkap;
