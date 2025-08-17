@@ -137,13 +137,13 @@ class AuthNasabahController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
 
             // Path absolut ke public_html
-            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/foto_nasabah';
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/foto_nasabah';
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
             $file->move($uploadPath, $filename);
-            $update['foto'] = 'uploads/foto_nasabah/' . $filename;
+            $user['foto'] = 'foto_nasabah/' . $filename;
         }
 
         $user->save();
