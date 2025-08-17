@@ -27,7 +27,14 @@ class EdukasiController extends Controller
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $namaFoto = time() . '_' . $foto->getClientOriginalName();
-            $foto->move(public_path('uploads/edukasi'), $namaFoto);
+
+            // Gunakan path absolut menuju public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/edukasi';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true); // buat folder jika belum ada
+            }
+
+            $foto->move($uploadPath, $namaFoto);
             $fotoPath = 'uploads/edukasi/' . $namaFoto;
         }
 
@@ -58,15 +65,17 @@ class EdukasiController extends Controller
 
         // Update foto jika ada file baru
         if ($request->hasFile('foto')) {
-            // Hapus file lama jika ada
-            if ($edukasi->foto && File::exists(public_path($edukasi->foto))) {
-                File::delete(public_path($edukasi->foto));
-            }
-
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/edukasi'), $filename);
-            $edukasi->foto = 'uploads/edukasi/' . $filename;
+
+            // Path absolut ke public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/edukasi';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $file->move($uploadPath, $filename);
+            $update['foto'] = 'uploads/edukasi/' . $filename;
         }
 
         $edukasi->judul = $request->judul;
