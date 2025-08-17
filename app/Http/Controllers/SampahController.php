@@ -41,7 +41,8 @@ class SampahController extends Controller
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $namaFoto = time() . '_' . $foto->getClientOriginalName();
-            $foto->move(public_path('uploads/sampah'), $namaFoto);
+            // $foto->move(public_path('uploads/sampah'), $namaFoto);
+            $foto->move($_SERVER['DOCUMENT_ROOT'].'uploads/sampah', $namaFoto);
             $fotoPath = 'uploads/sampah/' . $namaFoto;
         }
 
