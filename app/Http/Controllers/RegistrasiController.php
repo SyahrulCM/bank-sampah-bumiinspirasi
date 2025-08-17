@@ -113,14 +113,13 @@ class RegistrasiController extends Controller
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
 
-            // Path absolut ke public_html
             $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/foto_nasabah';
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
             $file->move($uploadPath, $filename);
-            $update['foto'] = 'foto_nasabah/' . $filename;
+            $registrasi->foto = 'foto_nasabah/' . $filename;
         }
 
         $registrasi->nama_lengkap = $request->nama_lengkap;
