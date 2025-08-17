@@ -75,7 +75,7 @@ class EdukasiController extends Controller
             }
 
             $file->move($uploadPath, $filename);
-            $update['foto'] = 'uploads/edukasi/' . $filename;
+            $edukasi['foto'] = 'uploads/edukasi/' . $filename;
         }
 
         $edukasi->judul = $request->judul;
