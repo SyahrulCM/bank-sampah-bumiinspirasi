@@ -41,8 +41,14 @@ class SampahController extends Controller
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $namaFoto = time() . '_' . $foto->getClientOriginalName();
-            // $foto->move(public_path('uploads/sampah'), $namaFoto);
-            $foto->move($_SERVER['DOCUMENT_ROOT'].'uploads/sampah', $namaFoto);
+
+            // Gunakan path absolut menuju public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/sampah';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true); // buat folder jika belum ada
+            }
+
+            $foto->move($uploadPath, $namaFoto);
             $fotoPath = 'uploads/sampah/' . $namaFoto;
         }
 
@@ -84,7 +90,14 @@ class SampahController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/sampah'), $filename);
+
+            // Path absolut ke public_html
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/sampah';
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $file->move($uploadPath, $filename);
             $update['foto'] = 'uploads/sampah/' . $filename;
         }
 
@@ -111,7 +124,7 @@ class SampahController extends Controller
             $d->harga_pengepul_rp = 'Rp ' . number_format($d->harga_pengepul, 0, ',', '.');
             $d->harga_ditabung_rp = 'Rp ' . number_format($d->harga_ditabung ?? 0, 0, ',', '.');
 
-            $d->foto_url = url('uploads/sampah/' . basename($d->foto));
+            $d->foto_url = $d->foto ? url($d->foto) : null;
 
         }
 
