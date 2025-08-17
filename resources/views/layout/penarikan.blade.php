@@ -157,7 +157,7 @@
               <option value="">-- Pilih Nasabah --</option>
               @foreach($registrasis as $r)
               <option value="{{ $r->id_registrasi }}">
-                {{ $n->nama_lengkap }} - {{ $n->nomer_induk_nasabah }}
+                {{ $r->nama_lengkap }} - {{ $r->nomer_induk_nasabah }}
               </option>
               @endforeach
             </select>
