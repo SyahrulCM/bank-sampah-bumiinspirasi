@@ -41,13 +41,13 @@ class RegistrasiController extends Controller
             $namaFoto = time() . '_' . $foto->getClientOriginalName();
 
             // Gunakan path absolut menuju public_html
-            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/foto_nasabah';
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/foto_nasabah';
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true); // buat folder jika belum ada
             }
 
             $foto->move($uploadPath, $namaFoto);
-            $fotoPath = 'uploads/foto_nasabah/' . $namaFoto;
+            $fotoPath = 'foto_nasabah/' . $namaFoto;
         }
 
         $registrasi = new Registrasi();
@@ -114,13 +114,13 @@ class RegistrasiController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
 
             // Path absolut ke public_html
-            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/foto_nasabah';
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . '/foto_nasabah';
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
             $file->move($uploadPath, $filename);
-            $update['foto'] = 'uploads/foto_nasabah/' . $filename;
+            $update['foto'] = 'foto_nasabah/' . $filename;
         }
 
         $registrasi->nama_lengkap = $request->nama_lengkap;
