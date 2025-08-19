@@ -61,7 +61,7 @@ class AuthNasabahController extends Controller
             'nomer_induk_nasabah' => 'nullable|unique:registrasis,nomer_induk_nasabah',
             'password' => 'required|min:6',
             'tanggal' => 'required|date',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|max:10000',
         ]);
 
         if ($validator->fails()) {
@@ -119,7 +119,7 @@ class AuthNasabahController extends Controller
             'nomer_telepon' => 'sometimes',
             'tanggal' => 'sometimes|nullable|date',
             'password' => 'nullable|min:6',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|max:10000',
         ]);
 
         if ($validator->fails()) {
