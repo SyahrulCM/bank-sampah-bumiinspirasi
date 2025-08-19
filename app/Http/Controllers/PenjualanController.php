@@ -124,7 +124,7 @@ class PenjualanController extends Controller
         $penjualan = Penjualan::findOrFail($id);
         $penjualan->hasil_negosiasi = $request->hasil_negosiasi;
         $penjualan->save();
-        return redirect()->back()->with('success', 'Harga negosiasi berhasil divalidasi.');
+        return redirect()->route('penjualans.index')->with('success', 'Harga negosiasi berhasil divalidasi.');
     }
 
     public function invoice($id)
